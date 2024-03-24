@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'db_manager.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,8 +30,12 @@ class MainCameraPage extends StatefulWidget {
 }
 
 class _MainCameraPageState extends State<MainCameraPage> {
+  DBManager? _dbManager;
+
   @override
   Widget build(BuildContext context) {
+    _createDB();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -38,13 +43,26 @@ class _MainCameraPageState extends State<MainCameraPage> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-            Text(
+          children: <Widget>[
+            const Text(
               'Add first NoodleLens page.',
+            ),
+            ElevatedButton(
+                onPressed: _onTestButtonPressed,
+                child: const Text('データベース'),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _createDB() async {
+    _dbManager = await DBManager.create();
+  }
+
+  void _onTestButtonPressed() async {;
+    var item = await _dbManager!.getNoodleItem(1, NoodleItem.EN);
+    print('');
   }
 }

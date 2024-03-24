@@ -1,0 +1,262 @@
+{
+  "0": {
+    "common_id": 1,
+    "name": "マルちゃん ごつ盛り ソース焼きそば",
+    "manufacture_name": "東洋水産",
+    "image": "img01.jpg",
+    "description_list": [
+      {
+        "name": "Maru-chan sauce yakisoba",
+        "language": "en",
+        "recipe": "Estimated amount of hot water required: 660ml\r\n① Open the lid from A to B and take out the liquid sauce, quick, and mustard mayonnaise.\r\n②Pour the kayaku on top of the noodles, pour boiling water up to the inside line, and cover with a lid.\r\n③ After 3 minutes, slowly peel off the hot water cutter in C in the direction of the arrow.\r\n④Hold the container firmly, slowly turn it over, and pour out the hot water from the drain (be careful not to get burned).\r\n⑤ Peel off the lid, pour in the liquid sauce, mix well, and serve with mustard mayonnaise.",
+        "instructions": "Gotsumori sauce yakisoba is a large cup of yakisoba that can be enjoyed easily (at a low price) due to the volume of noodles (130g) and deliciousness (includes special sauce + mayonnaise). The noodles are smooth, elastic, and cut with round blades and are rich in flavor. Noodles weigh 130g and are rehydrated for 3 minutes. The sauce is an original spicy yakisoba sauce made with Worcestershire sauce, Chuno sauce, and mud sauce, and the accompanying mustard mayonnaise gives it a mellow finish. I use cabbage in a quick way."
+      },
+      {
+        "name": "마루짱 고츠모리 소스 야키소바",
+        "language": "ko",
+        "recipe": "필요한 물의 기준량 660ml\r\n①뚜껑을 A에서 B의 실선까지 뚫고, 액체 소스, 화려하게, 겨자 마요네즈를 꺼낸다.\r\n② 카야쿠를 국수 위에 얹고 온수를 안쪽 선까지 붓고 뚜껑을 한다.\r\n③ 3분 후 C의 목욕을 화살표 방향으로 천천히 떼어낸다.\r\n④ 용기를 확실히 잡고 천천히 가라앉히고, 목장에서 물을 버린다( 화상에 주의).\r\n⑤뚜껑을 전부 떼어, 액체 소스를 뿌려 잘 섞고, 겨자 마요네즈를 걸어 드세요.",
+        "instructions": "고트 모듬 소스 야키소바는 국수 볼륨 (130g)과 맛 (고집 소스 + 마요네즈 포함)에 의해 간편 (저가격)에 맛볼 수있는 오모리 컵 야키소바입니다. 국수는 향이 풍부하고 부드럽고 탄력있는 원형 칼날로 자른 국수를 사용합니다. 국수 중량 130g, 3분 되돌아가는 면입니다. 소스는 우스터 소스, 중농 소스에 도로 소스에 넣은 오리지널 매운 야키소바 소스에 별첨의 겨자 마요네즈로 부드럽게 완성됩니다. 빨리 양배추를 사용하고 있습니다."
+      },
+      {
+        "name": "丸酱炒面",
+        "language": "zhs",
+        "recipe": "预计所需热水量：660ml\r\n① 从A到B打开盖子，取出液体酱汁、速溶、芥末蛋黄酱。\r\n②将加药倒在面条上，倒入开水至内线，盖上盖子。\r\n③ 3分钟后，按箭头方向慢慢剥去C处的热水刀。\r\n④握紧容器，慢慢翻转，从排水管倒出热水（注意不要被烫伤）。\r\n⑤ 揭开盖子，倒入液体酱汁，拌匀，搭配芥末蛋黄酱即可食用。",
+        "instructions": "Gotsumori酱汁炒面是一种大杯炒面，由于面条的体积（130g）和美味（包括特制酱汁+蛋黄酱），因此可以轻松（以低廉的价格）享用大杯炒面。 面条光滑，有弹性，用圆刀切，味道浓郁。 面条重130克，再水化3分钟。 酱汁是由伍斯特郡酱、丘诺酱和泥酱制成的原始辛辣炒面酱，搭配芥末蛋黄酱给它带来醇厚的余味。 我用卷心菜的速度很快。"
+      }
+    ]
+  },
+  "1": {
+    "common_id": 2,
+    "name": "カップヌードル",
+    "manufacture_name": "日清",
+    "image": "img02.jpg",
+    "description_list": [
+      {
+        "name": "杯面",
+        "language": "zhs",
+        "recipe": "① 将盖子揭开一半，慢慢倒入开水至内线。 ② 盖上盖子，3分钟完成！",
+        "instructions": "满满的配料！世界上第一个杯面，杯面！杯面是柔软、有嚼劲、滑滑的面条，以我们熟悉的原味酱油汤为特色，带有浓郁的胡椒味。 色彩缤纷的杯面，配料有调味肉末（神秘肉）、肉末、虾、炒鸡蛋和大葱。 预计所需热水量：300ml"
+      },
+      {
+        "name": "컵 누들",
+        "language": "ko",
+        "recipe": "①뚜껑을 반까지 떼어내고, 온수를 안쪽의 선까지 천천히 붓는다. ②뚜껑을 하고 3분만에 OK!",
+        "instructions": "재료 충실! 세계 최초의 컵라면, 컵라면! 컵라면은 온수가 어려워, 유연하고 코시와 포도나무가 있는 국수에 페퍼를 든 코쿠가 있는, 친숙한 오리지널 간장 스프가 특징입니다. 재료에 양념 돼지 민치 (수수께끼 고기), 민치 돼지고기, 새우, 스크램블 달걀, 파 등이 들어간, 풍부한 컵라면입니다. 필요한 물의 기준량 300ml"
+      },
+      {
+        "name": "Cup Noodles",
+        "language": "en",
+        "recipe": "① Peel off the lid halfway and slowly pour boiling water up to the inside line. ② Close the lid and finish in 3 minutes!",
+        "instructions": "Full of toppings! The world's first cup noodles, Cup Noodles! Cup Noodles are supple, chewy, and slippery noodles, and feature our familiar original soy sauce soup with a rich, peppery flavor. A colorful cup noodle with ingredients such as seasoned minced pork (mystery meat), minced pork, shrimp, scrambled eggs, and green onions. Estimated amount of hot water required: 300ml"
+      }
+    ]
+  },
+  "2": {
+    "common_id": 3,
+    "name": "焼きそばU.F.O",
+    "manufacture_name": "日清",
+    "image": "img05.jpg",
+    "description_list": [
+      {
+        "name": "Yakisoba U.F.O.",
+        "language": "en",
+        "recipe": "① Remove the furikake bag on top of the lid, peel off the lid from 1 to 2 at the bottom, and take out the sauce bag.\r\n② Pour boiling water up to the inner line, cover and wait 3 minutes. Warm the sauce on the lid.\r\n③ Peel off the lid along the dotted line from 3 on the top to create an opening for draining the hot water.\r\n④ Hold the cup firmly, tilt it gently, and drain the hot water from the spout.\r\n⑤ Peel off the lid completely, pour the sauce over and mix well.\r\n⑥Finally sprinkle with furikake and serve.",
+        "instructions": "Good! Thick! Big! Addictive rich sauce! Long-selling \"Nissin Yakisoba U.F.O\" released in 1976. In keeping with the concept of ``Good! Thick! Big!'', the noodles are chewy and chewy, with a roasted aroma, and you can fully enjoy the umami, sourness, and spice of the sauce and pork. It is characterized by its rich sauce. The ingredients include shredded cabbage and stir-fried pork to increase the richness. It comes with a sprinkle of green seaweed and pickled ginger. Estimated amount of hot water required: 460ml"
+      },
+      {
+        "name": "야키소바 U.F.O.",
+        "language": "ko",
+        "recipe": "① 뚜껑 위에 뿌려진 봉지를 꺼내 뚜껑을 하부의 1에서 2까지 떼어내고 소스의 봉투를 꺼낸다.\r\n② 온수를 안쪽 선까지 붓고 뚜껑을 덮고 3분간 기다린다. 소스를 뚜껑 위에 데운다.\r\n③뚜껑을 상부의 3으로부터 점선에 따라 떼어내, 목욕구를 만든다.\r\n④ 컵을 확실히 잡고 조용히 기울여 목욕구에서 목욕을 한다.\r\n⑤뚜껑을 완전히 벗겨 소스를 뿌려 잘 섞는다.\r\n⑥마지막으로 뿌려 걸어 완성.",
+        "instructions": "잘! 굵게! 크다! 야미츠키 진한 소스! \"잘! 굵게! 크다!\"의 컨셉 그대로, 코시의 힘이 특징의 먹고 맛있는 중태면에 로스트 한 향기가 서서 소스와 돼지고기의 맛, 신맛, 그리고 향신료 느낌이 제대로 만끽 할 수 있는 농후 소스가 특징입니다. 재료에는 소중한 양배추에 볶은 돼지고기를 사용하여 감칠맛을 업. 별첨으로 푸른 김과 홍생강의 뿌려 첨부입니다. 필요한 물의 기준량 460ml"
+      },
+      {
+        "name": "炒面 U.F.O.",
+        "language": "zhs",
+        "recipe": "① 取下盖子上的香松袋，从底部的 1 到 2 处揭开盖子，取出酱汁袋。\r\n②倒入沸水至内线，盖上盖子等待3分钟。 将盖子上的酱汁加热。\r\n③ 从顶部 3 处沿虚线撕开盖子，形成一个用于排出热水的开口。\r\n④ 握住杯子，轻轻倾斜，将热水从壶嘴中排出。\r\n⑤ 将盖子完全揭开，将酱汁倒入，搅拌均匀。\r\n⑥最后撒上香松即可食用。",
+        "instructions": "好！厚！大！酱汁浓郁，让人上瘾！1976年发售的长销“日清炒面U.F.O”。 本着“好！粗！大！”的理念，面条筋道有嚼劲，带着烤香，可以充分享受酱汁和猪肉的鲜味、酸味、辣味。因其浓郁的酱汁。 配料包括切碎的卷心菜和炒猪肉，以增加浓郁度。 它配有少许绿色海藻和腌姜。 预计所需热水量：460ml"
+      }
+    ]
+  },
+  "3": {
+    "common_id": 4,
+    "name": "カップヌードル シーフード",
+    "manufacture_name": "日清",
+    "image": "img03.jpg",
+    "description_list": [
+      {
+        "name": "杯面海鲜面",
+        "language": "zhs",
+        "recipe": "① 将盖子揭开一半，慢慢倒入开水至内线。 ② 盖上盖子，3分钟完成！",
+        "instructions": "配料丰富！海鲜杯面！海鲜杯面的特点是面条柔软、有嚼劲，不会被热水浸泡，汤汁以猪肉为底料，加入大量海鲜提取物，汤汁浓郁，浑浊。 我们在食材中添加了柔软的鱿鱼身体部位，并增加了蟹味鱼糕的用量。 还含有鱿鱼、卷心菜、鸡蛋和葱。 预计所需热水量：320ml"
+      },
+      {
+        "name": "cup noodles seafood noodles",
+        "language": "en",
+        "recipe": "① Peel off the lid halfway and slowly pour boiling water up to the inside line. ② Close the lid and finish in 3 minutes!",
+        "instructions": "Full of toppings! Cup Noodle Seafood! Cup Noodle Seafood Noodles are characterized by soft, chewy noodles that don't get soaked in hot water, and a rich, cloudy soup made from a pork base with plenty of seafood extract. We have added soft squid body parts to the ingredients, and increased the amount of crab-flavored kamaboko. Also contains squid, cabbage, egg, and green onion. Estimated amount of hot water required: 320ml"
+      },
+      {
+        "name": "컵라면 해산물 국수",
+        "language": "ko",
+        "recipe": "①뚜껑을 반까지 떼어내고, 온수를 안쪽의 선까지 천천히 붓는다. ②뚜껑을 하고 3분만에 OK!",
+        "instructions": "재료 충실! 컵 누들 해산물! 컵 누들 해산물 국수는 온수 어려워, 유연하고 코시와 덩굴이있는 국수와, 돼지고기 베이스에 해산물 추출물을 제대로 익힌 감칠맛이 있는 백탁 수프가 특징입니다. 재료에 입맛의 부드러운 오징어의 몸통 부분을 추가, 게 풍미 어묵을 증량하고 있습니다. 그 외에 게소이카, 양배추, 달걀, 파가 들어 있습니다. 필요한 물의 기준량 320ml"
+      }
+    ]
+  },
+  "4": {
+    "common_id": 5,
+    "name": "あっさりおいしいカップヌードル",
+    "manufacture_name": "日清",
+    "image": "img06.jpg",
+    "description_list": [
+      {
+        "name": "담백한 맛있는 컵라면",
+        "language": "ko",
+        "recipe": "①뚜껑을 반까지 떼어내고, 온수를 안쪽의 선까지 천천히 붓는다. ②뚜껑을 하고 3분만에 OK!",
+        "instructions": "「컵 누들」은 세계 최초로 발매된 컵라면 브랜드입니다. 통상의 컵 누들과 비교해, 뒷맛은 깔끔한 맛입니다만, 제대로 맛도 느껴지는 깔끔한 맛있는 시리즈의 컵 누들입니다. 컵 국수와 비교하여 면 약 80 %의 깔끔한 맛있는 컵라면입니다."
+      },
+      {
+        "name": "简单又美味的杯面",
+        "language": "zhs",
+        "recipe": "① 将盖子揭开一半，慢慢倒入开水至内线。 ② 盖上盖子，3分钟完成！",
+        "instructions": "“Cup Noodles”是世界第一杯拉面品牌。 与普通的杯面相比，它有清爽的回味，但却是清淡可口、风味浓郁的杯面系列。 清淡可口的杯面，面条量比杯面少80%左右。"
+      },
+      {
+        "name": "Simple and delicious cup noodles",
+        "language": "en",
+        "recipe": "① Peel off the lid halfway and slowly pour boiling water up to the inside line. ② Close the lid and finish in 3 minutes!",
+        "instructions": "\"Cup Noodles\" is the world's first cup ramen brand. Compared to regular Cup Noodles, it has a refreshing aftertaste, but it is a series of Cup Noodles that is light and delicious and has a strong flavor. A light and delicious cup noodle with about 80% of the noodles compared to cup noodles."
+      }
+    ]
+  },
+  "5": {
+    "common_id": 6,
+    "name": "あっさりおいしいカップヌードル シーフード",
+    "manufacture_name": "日清",
+    "image": "img07.jpg",
+    "description_list": [
+      {
+        "name": "Simple and delicious cup noodle seafood",
+        "language": "en",
+        "recipe": "① Peel off the lid halfway and slowly pour boiling water up to the inside line. ② Close the lid and finish in 3 minutes!",
+        "instructions": "\"Cup Noodles\" is the world's first cup ramen brand. Compared to regular Cup Noodles, it has a refreshing aftertaste, but it is a series of Cup Noodles that is light and delicious and has a strong flavor. A light and delicious cup noodle with about 80% of the noodles compared to cup noodles."
+      },
+      {
+        "name": "담백한 맛있는 컵라면 해산물",
+        "language": "ko",
+        "recipe": "①뚜껑을 반까지 떼어내고, 온수를 안쪽의 선까지 천천히 붓는다. ②뚜껑을 하고 3분만에 OK!",
+        "instructions": "「컵 누들」은 세계 최초로 발매된 컵라면 브랜드입니다. 통상의 컵 누들과 비교해, 뒷맛은 깔끔한 맛입니다만, 제대로 맛도 느껴지는 깔끔한 맛있는 시리즈의 컵 누들입니다. 컵 국수와 비교하여 면 약 80 %의 깔끔한 맛있는 컵라면입니다."
+      },
+      {
+        "name": "简单又美味的杯面海鲜",
+        "language": "zhs",
+        "recipe": "① 将盖子揭开一半，慢慢倒入开水至内线。 ② 盖上盖子，3分钟完成！",
+        "instructions": "“Cup Noodles”是世界第一杯拉面品牌。 与普通的杯面相比，它有清爽的回味，但却是清淡可口、风味浓郁的杯面系列。 清淡可口的杯面，面条量比杯面少80%左右。"
+      }
+    ]
+  },
+  "6": {
+    "common_id": 7,
+    "name": "マルちゃん 赤いきつねうどん",
+    "manufacture_name": "東洋水産",
+    "image": "img08.jpg",
+    "description_list": [
+      {
+        "name": "丸酱红狐乌冬面",
+        "language": "zhs",
+        "recipe": "预计所需热水量：410ml\r\n① 将盖子向箭头方向揭开，取出汤粉。\r\n② 将汤粉倒在面条上，然后倒入开水至面条内线。\r\n③ 5分钟后盖上盖子搅拌均匀。 撒上七味辣椒即可享用。",
+        "instructions": "“赤井狐乌冬面”因为给顾客带来熟悉的味道，让顾客放心地品尝精心挑选的汤头的美味，所以很受欢迎。 我们引以为傲的是用鲣鱼片和海带高汤制成的美味关东风味汤、有嚼劲的乌冬面和大份炒饭。 面条又滑又粗。 面条重量74克。 5 分钟后。 汤头是用鲣鱼片和海带熬制而成的，味道鲜美、优雅的关东乌冬面汤。 附七味辣椒（亲子包）。 配料是调味炸豆腐、鱼糕、鸡蛋和葱。"
+      },
+      {
+        "name": "Maru-chan red fox udon",
+        "language": "en",
+        "recipe": "Estimated amount of hot water required: 410ml\r\n① Peel the lid up to the arrow and remove the powdered soup.\r\n②Pour the powdered soup over the noodles and pour boiling water up to the inside line.\r\n③ Cover with a lid and stir well after 5 minutes. Sprinkle with shichimi chili pepper and enjoy.",
+        "instructions": "\"Akai Kitsune Udon\" is popular because it provides customers with a familiar taste that makes them feel at ease with the deliciousness of the carefully selected soup. We are proud of our flavorful Kanto-style soup made with bonito flakes and kelp stock, chewy udon noodles, and large deep-fried fried rice. The noodles are smooth and thick. Noodle weight 74g. 5 minutes back. The soup is a flavorful and elegant Kanto-style udon soup made with bonito flakes and kelp. Attached shichimi chili pepper (parent and child pack). The ingredients are seasoned fried tofu, kamaboko, egg, and green onion."
+      },
+      {
+        "name": "마루 짱 레드 키츠네 우동",
+        "language": "ko",
+        "recipe": "필요한 물의 기준량 : 410ml\r\n①뚜껑을 화살표까지 떼어내, 분말 스프를 꺼낸다.\r\n② 분말 수프를 국수 위에 붓고 온수를 안쪽 선까지 붓는다.\r\n③뚜껑을 하고 5분 후 잘 섞는다. 나나미 고추를 밥으로 드세요.",
+        "instructions": "엄선한 츠유의 맛으로 고객에게 안심감이 있는 먹을 수 있는 맛을 제공해, 지지되는 「붉은 여우 우동」입니다. 가다랭이와 다시마의 국물을 곁들인 풍미 풍부한 관동풍의 가다랭이에, 코시가 있는 우동, 맛이 가득한 큰 튀김이 자랑. 국수는 부드러운 굵은 우동. 국수 중량 74g. 5분 복귀입니다. 츠유는, 가다랭이와 다시마의 국물이 낳은, 풍미 풍부하고 품위 있는 간토풍 우동 츠유를 채용. 별첨 칠미 고추(부모와 자식 팩). 재료는 양념 기름 튀김, 어묵, 달걀, 파를 사용합니다."
+      }
+    ]
+  },
+  "7": {
+    "common_id": 8,
+    "name": "ペヤング ソース焼きそば",
+    "manufacture_name": "まるか食品",
+    "image": "img09.jpg",
+    "description_list": [
+      {
+        "name": "페영 소스 야키소바",
+        "language": "ko",
+        "recipe": "(1) 뚜껑을 (A)에서 (B)의 선까지 벗겨 소스, 가볍게, 뿌려 향신료를 꺼냅니다. (2)카카쿠를 면 위에 올려 뜨거운 물을 안쪽의 선까지 부어 뚜껑을 합니다. (3) 3분 후, (C)의 목욕을 화살표 방향으로 천천히 떼어냅니다. (4)컵의 별표의 부분 2개소를 확실히 들고, 천천히 기울이면서 온천구에서 온수를 하고 있습니다. (5)뚜껑을 모두 벗겨, 소스를 잘 섞어, 뿌려・향신료를 뿌려 드세요. ●온수의 기준량:480ml",
+        "instructions": "① 뚜껑을 A에서 B의 선까지 떼어내고 소스, 가볍게, 뿌려・향신료를 꺼냅니다.\r\n② 카야쿠를 면 위에 올려 뜨거운 물을 안쪽의 선까지 붓고 뚜껑을 합니다.\r\n③ 3분 후, C의 온천구를 화살표 방향으로 천천히 떼어냅니다.\r\n④ 컵의 ☆ 부분 2곳을 확실히 들고 천천히 기울이면서 온천구에서 온수를 헹구고 있습니다.\r\n⑤ 뚜껑을 모두 벗겨 소스를 잘 섞어 뿌려 향신료를 뿌려 드세요.\r\n뜨거운 물의 기준량 : 480ml"
+      },
+      {
+        "name": "Payang Sauce Yakisoba",
+        "language": "en",
+        "recipe": "(1) Peel off the lid from line (A) to line (B) and remove the sauce, spices, furikake, and spices. (2) Pour the kayaku over the noodles, pour boiling water up to the inside line, and close the lid. (3) After 3 minutes, slowly peel off the hot water cutter (C) in the direction of the arrow. (4) Hold the cup firmly by the two asterisks and slowly tilt the cup to drain the hot water from the spout. (5) Peel off the lid, mix the sauce well, sprinkle with sprinkles and spices, and enjoy. ●Estimated amount of hot water: 480ml",
+        "instructions": "① Peel off the lid from line A to B and remove the sauce, kayako, furikake, and spices.\r\n② Pour the kayaku over the noodles, pour boiling water up to the inside line, and close the lid.\r\n③ After 3 minutes, slowly peel off the hot water cutout of C in the direction of the arrow.\r\n④ Hold the two ☆ parts of the cup firmly and tilt it slowly to drain the hot water from the spout.\r\n⑤ Remove all lids, mix the sauce well, sprinkle with sprinkles and spices, and enjoy.\r\nApproximate amount of hot water: 480ml"
+      },
+      {
+        "name": "帕阳酱炒面",
+        "language": "zhs",
+        "recipe": "(1) 从(A)线到(B)线剥开盖子，取出酱汁、香料、香松、香料。 (2) 将锅倒在面条上，倒入开水至内线，盖上盖子。 (3) 3分钟后，按箭头方向慢慢剥离热水刀(C)。 (4) 握住杯子的两个星号，慢慢倾斜杯子，将热水从喷嘴中排出。 (5)揭开盖子，将酱汁拌匀，撒上糖粉和香料，即可享用。 ●预计热水量：480ml",
+        "instructions": "① 从A线到B线剥开盖子，取出酱汁、伽椰子、香松、香料。\r\n② 将加药倒在面条上，倒入开水至内线，盖上盖子。\r\n③ 3分钟后，按箭头方向慢慢剥去C的热水切口。\r\n④ 握住杯子的两个☆部分，慢慢倾斜，将壶嘴中的热水排出。\r\n⑤ 取下所有盖子，将酱汁搅拌均匀，撒上糖粉和香料，即可享用。\r\n热水量大约：480ml"
+      }
+    ]
+  },
+  "8": {
+    "common_id": 9,
+    "name": "一平ちゃん 野店の焼きそば",
+    "manufacture_name": "明星",
+    "image": "img10.jpg",
+    "description_list": [
+      {
+        "name": "一平酱夜店的炒面",
+        "language": "zhs",
+        "recipe": "烹调方式： 大约热水量：540ml\r\n1. 从①到②线揭开盖子，从杯中取出液体酱汁、酱汁香松和芥末蛋黄酱，倒入开水至内线，然后盖上盖子。\r\n2. 3分钟后，按箭头方向慢慢剥离热水刀③。\r\n3. 握住杯子并缓慢倾斜，以排出喷嘴中的热水。\r\n4.揭开所有盖子，倒入液体酱汁，拌匀，撒上芥末蛋黄酱，撒上酱汁。",
+        "instructions": "回归本源！铁板上的美味！进一步提炼出铁板烤的香气和味道，焕然一新！酱料用量增加1.3倍，与酱料的相容性更好，感觉松软有弹性，最后配上面条。 您可以享受一平酱著名的芥末蛋黄酱的浓郁风味。"
+      },
+      {
+        "name": "Yakisoba at Ippei-chan night shop",
+        "language": "en",
+        "recipe": "Cooking method: Approximate amount of hot water: 540ml\r\n1. Peel off the lid from ① to ② line, remove the liquid sauce, sauce furikake, and mustard mayonnaise from the cup, pour boiling water up to the inner line, and close the lid.\r\n2. After 3 minutes, slowly peel off the hot water cutter ③ in the direction of the arrow.\r\n3. Hold the cup firmly and slowly pour out the hot water from the spout.\r\n4. Peel off all the lids, pour in the liquid sauce, mix well, sprinkle with mustard mayonnaise, and sprinkle with the sauce.",
+        "instructions": "Return to the origin! Deliciousness on an iron plate! Renewed by further refining the fragrant aroma and taste as if grilled on an iron plate! By increasing the amount of sauce paste by 1.3 times, the compatibility with the sauce is better, and it feels supple and elastic. Finished with noodles. You can enjoy the rich flavor with Ippei-chan's famous mustard mayonnaise."
+      },
+      {
+        "name": "이치다이라 야점의 야키소바",
+        "language": "ko",
+        "recipe": "요리 방법 뜨거운 물의 기준량 540ml\r\n1. 뚜껑을 ①에서 ②의 선까지 떼어내고, 액체 소스, 소스 뿌려, 겨자 마요네즈를 컵으로부터 꺼내, 뜨거운 물을 안쪽의 선까지 부어 뚜껑을 합니다.\r\n2. 3분 후 ③의 온천구를 화살표 방향으로 천천히 떼어냅니다.\r\n3. 컵을 확실히 잡고, 천천히 가볍게 끓는 물 찻잔에서 뜨거운 물을 헹구십시오.\r\n4. 뚜껑을 모두 벗기고, 액체 소스를 뿌려 잘 섞고, 겨자 마요네즈, 소스 뿌리를 뿌려 완성.",
+        "instructions": "원점 회귀! 맛 철판! 철판으로 구운 것 같은 고소한 향기와 맛에 더욱 닦아 걸고 리뉴얼! 국수로 완성했습니다. 이치다이라 친숙한 겨자 마요네즈로 풍부한 맛을 즐길 수 있습니다."
+      }
+    ]
+  },
+  "9": {
+    "common_id": 10,
+    "name": "カップヌードル カレー",
+    "manufacture_name": "日清",
+    "image": "img04.jpg",
+    "description_list": [
+      {
+        "name": "컵라면 카레",
+        "language": "ko",
+        "recipe": "①뚜껑을 반까지 떼어내고, 온수를 안쪽의 선까지 천천히 부어 ②뚜껑을 해 3분 후 잘 섞어 OK!",
+        "instructions": "재료 충실! 컵라면 카레! 컵라면 카레는 온수가 어려워, 유연하고 코시와 덩굴이 있는 면에, 야채의 단맛이 있는 마일드로 썰매가 있는 카레 스프가 특징입니다. 재료의 다이스 민치를 증량! 그 외에, 감자, 파, 당근이 들어가 있습니다. 필요한 물의 기준량 300ml"
+      },
+      {
+        "name": "cup noodle curry",
+        "language": "en",
+        "recipe": "① Peel off the lid halfway and slowly pour boiling water up to the inside line. ② Close the lid and finish in 3 minutes!",
+        "instructions": "Full of toppings! Cup noodle curry!Cup noodle curry is characterized by its supple, chewy, and slippery noodles that don't get soaked in hot water, and its mild, thick curry soup with the sweetness of vegetables. Increased amount of diced minced ingredients! Also contains potatoes, green onions, and carrots. Estimated amount of hot water required: 300ml"
+      },
+      {
+        "name": "杯面咖喱",
+        "language": "zhs",
+        "recipe": "① 将盖子揭开一半，慢慢倒入开水至内线。 ② 3分钟后盖上盖子，搅拌均匀即可！",
+        "instructions": "配料满满的！咖喱杯面！咖喱杯面的特点是面条柔韧、有嚼劲、滑滑，不会被热水浸泡，咖喱汤汁温和浓稠，带有蔬菜的甜味。 增加了切碎材料的用量！还添加了土豆、大葱、胡萝卜。 预计所需热水量：300ml"
+      }
+    ]
+  }
+}
