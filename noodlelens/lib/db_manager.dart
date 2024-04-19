@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -27,7 +28,7 @@ class NoodleItem {
   /// メーカー
   String manufactureName = '';
   /// ラベルイメージのパス
-  String imagePath = '';
+  Image? image;
   /// 作り方
   String howToMake = '';
   /// 商品説明
@@ -35,36 +36,41 @@ class NoodleItem {
 }
 
 class DBManager {
-  //データベース名
+  // データベース名
   static const _databaseName = 'appdb.sqlite3';
-
-  //テーブル名
+  // テーブル名
   static const _noodleDescriptionTable = 'noodle_description';
   static const _noodleItemTable = 'noodle_item';
-  //カラム名
-  static const _noodleItemImageColumn = 'image';
-  static const _noodleItemNameColumn = 'manufacture_name';
-  static const _noodleItemCommonIdColumn = 'common_id';
-  static const _noodleDescriptionNameColumn = 'name';
-  static const _noodleDescriptionLanguageColumn = 'language';
-  static const _noodleDescriptionRecipeColumn = 'Recipe';
-  static const _noodleDescriptionInstructionsColumn = 'instructions';
+  // noodle_item カラム名
+  static const _noodleItemName = 'name';
+  static const _noodleItemImage = 'image';
+  static const _noodleItemManufactureName = 'manufacture_name';
+  static const _noodleItemCommonId = 'common_id';
+  // noodle_description カラム名
+  static const _noodleDescriptionName = 'name';
+  static const _noodleDescriptionManufactureName = 'manufacture_name';
+  static const _noodleDescriptionLanguage = 'language';
+  static const _noodleDescriptionRecipe = 'recipe';
+  static const _noodleDescriptionInstructions = 'instructions';
 
   static Database? _database;
+  static int _count = -1;
+  static const String _imagePath = 'assets/noodle_images/';
 
+  ///
   /// コンストラクタ
   ///
   DBManager._init();
 
   static Future<DBManager> create() async {
     var instance = DBManager._init();
-    // _database ??= await _getDatabase();
     if(_database == null) {
       await _getDatabase();
     }
     return instance;
   }
 
+  ///
   /// データベースインスタンスを生成
   ///
   static Future<void> _getDatabase() async {
@@ -79,9 +85,15 @@ class DBManager {
         _registerData(db);
       }
     );
+    _getItemCount();
   }
 
-  static void _createDatabase(var db) {
+  ///
+  /// データベースの作成
+  ///
+  /// アプリの初回起動時、データベースが存在しないときにのみ呼ばれる。
+  ///
+  static void _createDatabase(Database db) {
     // アイテムテーブル
     db.execute(
       'CREATE TABLE IF NOT EXISTS noodle_item ('
@@ -103,7 +115,12 @@ class DBManager {
     );
   }
 
-  static Future<void> _registerData(var db) async {
+  ///
+  /// データベースにテータを登録
+  ///
+  /// データ元となるJsonファイルから値を読み込んで登録する。
+  ///
+  static Future<void> _registerData(Database db) async {
     const jsonFile = 'assets/db/appdb.json';
     final jsonString = await rootBundle.loadString(jsonFile);
     Map<String, dynamic> items = json.decode(jsonString);
@@ -112,7 +129,7 @@ class DBManager {
       await db.insert(
         _noodleItemTable,
         {
-          'common_id': item['common_id'],
+          'common_id': item[_noodleItemCommonId],
           'name': item['name'],
           'image': item['image'],
           'manufacture_name': item['manufacture_name'],
@@ -133,6 +150,20 @@ class DBManager {
     }
   }
 
+  ///
+  /// データベースに登録されているデータ数を取得
+  ///
+  static Future<void> _getItemCount() async {
+    var countQuery = await _database!.rawQuery('SELECT COUNT(*) FROM $_noodleItemTable');
+    _count = countQuery[0] as int;
+  }
+
+  ///
+  /// カップ麺の情報を取得
+  ///
+  /// [id]はAIモデルから出力された値を指定、[lang]は出力する言語で`NoodleItem`の定数で指定する。
+  /// [id]が存在しない場合は例外を返す。
+  ///
   Future<NoodleItem> getNoodleItem(int id, String lang) async {
     // アイテムを検索
     List<Map<String, dynamic>> itemQuery = await _database!.query(
@@ -140,8 +171,11 @@ class DBManager {
       where: 'common_id = ?',
       whereArgs: [id],
     );
+    if(itemQuery.isEmpty) {
+      throw Exception('指定されたidが存在しません.');
+    }
     var item = itemQuery[0];
-    var commonId = item['common_id'];
+    var commonId = item[_noodleItemCommonId];
     var language = lang;
 
     // アイテムの翻訳説明文を検索
@@ -150,24 +184,30 @@ class DBManager {
       where: 'item = ? and language = ?',
       whereArgs: [commonId, language],
     );
+    if(descriptionQuery.isEmpty) {
+      throw Exception('指定されたidでの翻訳文が存在しません.');
+    }
     var description = descriptionQuery[0];
 
     var noodleItem =NoodleItem();
+    // noodle_item
     noodleItem.commonId = commonId;
-    noodleItem.manufactureNameJp = item['name'];
-    noodleItem.manufactureName = description['name'];
-    noodleItem.nameJp = item['name'];
-    noodleItem.name = description['name'];
-    noodleItem.howToMake = description['recipe'];
-    noodleItem.instructions = description['instructions'];
+    noodleItem.nameJp = item[_noodleItemName];
+    noodleItem.manufactureNameJp = item[_noodleItemName];
+    noodleItem.image = _getImage(item[_noodleItemImage]);
+    // noodle_description
+    noodleItem.name = description[_noodleDescriptionName];
+    // noodleItem.manufactureName = description[_noodleDescriptionManufactureName];
     noodleItem.language = language;
-    noodleItem.imagePath = _getImage(item['image']);
+    noodleItem.howToMake = description[_noodleDescriptionRecipe];
+    noodleItem.instructions = description[_noodleDescriptionInstructions];
 
     return noodleItem;
   }
 
-  String _getImage(var fileName) {
-    return join('assets/noodle_images/', fileName);
+  Image _getImage(var fileName) {
+    var imagePath = join(_imagePath, fileName);
+    return Image(image: AssetImage(imagePath));
   }
 }
 
