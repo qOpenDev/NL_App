@@ -41,8 +41,13 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>App uses a camera to identify cup noodles.</string>
+	<string>The app uses a camera to identify cup noodles.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>The app does not utilize the microphone.</string>
 </dict>
 </plist>
