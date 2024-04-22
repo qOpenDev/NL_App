@@ -12,14 +12,26 @@ class MainCameraPage extends StatefulWidget {
 }
 
 class _MainCameraPageState extends State<MainCameraPage> {
-  late CameraController _controller;
+  late CameraController _cameraController;
   late Future<void> _initializeControllerFuture;
+  int? previewHeight;
+  int? previewWidth;
+
+  void startDetection(){
+    _cameraController.startImageStream((image) async {
+      final rowImage = image;
+    });
+  }
+
+  void stopDetection() {
+    _cameraController.stopImageStream();
+  }
 
   @override
   void initState() {
     super.initState();
 
-    _controller = CameraController(
+    _cameraController = CameraController(
       // カメラを指定
       widget.camera,
       // 解像度を定義
@@ -27,13 +39,20 @@ class _MainCameraPageState extends State<MainCameraPage> {
     );
 
     // コントローラーを初期化
-    _initializeControllerFuture = _controller.initialize();
+    _initializeControllerFuture = _cameraController.initialize().then((value) {
+      var previewSize = _cameraController.value.previewSize;
+      previewHeight = previewSize?.height as int;
+      previewWidth = previewSize?.width as int;
+
+      //検出の開始
+      startDetection();
+    });
   }
 
   @override
   void dispose() {
     // ウィジェットが破棄されたら、コントローラーを破棄
-    _controller.dispose();
+    _cameraController.dispose();
     super.dispose();
   }
 
@@ -44,7 +63,7 @@ class _MainCameraPageState extends State<MainCameraPage> {
       future: _initializeControllerFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return CameraPreview(_controller);
+          return CameraPreview(_cameraController);
         } else {
           return const Center(child: CircularProgressIndicator());
         }

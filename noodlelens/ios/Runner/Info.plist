@@ -47,7 +47,5 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>The app uses a camera to identify cup noodles.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>The app does not utilize the microphone.</string>
 </dict>
 </plist>
