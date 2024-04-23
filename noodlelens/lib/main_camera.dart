@@ -1,6 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
+import 'camera_frame.dart';
+
 
 class MainCameraPage extends StatefulWidget {
   late final CameraDescription camera;
@@ -58,8 +60,7 @@ class _MainCameraPageState extends State<MainCameraPage> {
 
   @override
   Widget build(BuildContext context) {
-    // FutureBuilder で初期化を待ってからプレビューを表示（それまではインジケータを表示）
-    return FutureBuilder<void>(
+    var cameraBuilder = FutureBuilder<void>(
       future: _initializeControllerFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
@@ -69,5 +70,7 @@ class _MainCameraPageState extends State<MainCameraPage> {
         }
       },
     );
+
+    return CameraFrame(cameraBuilder: cameraBuilder);
   }
 }
