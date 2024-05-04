@@ -11,11 +11,8 @@ import 'learning_model.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 推論インタプリタ
-  final model = await LearningModel.create();
-
   Future<void> create() async {
-    final main = Main(model: model);
+    final main = Main();
     await main.initialize();
     runApp(
         main
@@ -31,15 +28,10 @@ Future<void> main() async {
 }
 
 class Main extends StatelessWidget {
-  final LearningModel model;
+  late final LearningModel _model;
   late final CameraPage _cameraPage;
 
-  Main({
-    Key? key,
-    // required this.camera,
-    required this.model
-  }):super(key: key) {
-  }
+  Main({Key? key}):super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,14 +45,17 @@ class Main extends StatelessWidget {
   }
 
   Future<void> initialize() async {
+    // カメラ初期化
     _cameraPage = CameraPage(imageCallback: getImage);
     await _cameraPage.cameraPageState.initializeCamera();
+    // 推論インタプリタ初期化
+    _model = await LearningModel.create();
   }
 
   Future<void> getImage(img.Image image) async {
-    final result = await model.fit(image);
+    final result = await _model.fit(image);
     final topLabel = result[0]!;
-    final debugRealtimeLabel = '${model.labelList[topLabel.index]} ${topLabel.value}%';
+    final debugRealtimeLabel = '${_model.labelList[topLabel.index]} ${topLabel.value}%';
     _cameraPage.debugRealtimeLabel = debugRealtimeLabel;
   }
 }
