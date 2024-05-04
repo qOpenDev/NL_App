@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
 import 'package:image/image.dart' as img;
 import 'package:flutter/services.dart';
 
@@ -10,38 +11,34 @@ import 'learning_model.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // カメラ
-  final cameras = await availableCameras();
-  final camera = cameras.first;
   // 推論インタプリタ
   final model = await LearningModel.create();
+
+  Future<void> create() async {
+    final main = Main(model: model);
+    await main.initialize();
+    runApp(
+        main
+    );
+  }
 
   // アプリの向きを固定
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]).then((_) {
-    runApp(
-        NoodleLens(camera: camera, model: model)
-    );
-  });
+  ]).then((value) => create());
 
-  // runApp(
-  //     NoodleLens(camera: camera, model: model)
-  // );
 }
 
-class NoodleLens extends StatelessWidget {
-  final CameraDescription camera;
+class Main extends StatelessWidget {
   final LearningModel model;
-  late final CameraPage _mainCameraPage;
+  late final CameraPage _cameraPage;
 
-  NoodleLens({
+  Main({
     Key? key,
-    required this.camera,
+    // required this.camera,
     required this.model
   }):super(key: key) {
-    _mainCameraPage = CameraPage(camera: camera, imageCallback: getImage);
   }
 
   @override
@@ -51,14 +48,19 @@ class NoodleLens extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: _mainCameraPage,
+      home: _cameraPage,
     );
+  }
+
+  Future<void> initialize() async {
+    _cameraPage = CameraPage(imageCallback: getImage);
+    await _cameraPage.cameraPageState.initializeCamera();
   }
 
   Future<void> getImage(img.Image image) async {
     final result = await model.fit(image);
     final topLabel = result[0]!;
     final debugRealtimeLabel = '${model.labelList[topLabel.index]} ${topLabel.value}%';
-    _mainCameraPage.debugRealtimeLabel = debugRealtimeLabel;
+    _cameraPage.debugRealtimeLabel = debugRealtimeLabel;
   }
 }

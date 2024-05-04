@@ -13,9 +13,8 @@ class CameraPage extends StatefulWidget {
   final Function(img.Image) imageCallback;
 
   final _cameraPageState = _CameraPageState();
-
-  // デバッグ用
-  // var _debugPrint = '';
+  /// CameraPageのStateクラスインスタンス
+  get cameraPageState => _cameraPageState;
 
   set debugRealtimeLabel(value) {
     _cameraPageState.debugRealtimeLabel = value;
@@ -29,7 +28,6 @@ class CameraPage extends StatefulWidget {
 
   CameraPage({
     Key? key,
-    required this.camera,
     required this.imageCallback
   }) : super(key: key);
 
@@ -39,12 +37,10 @@ class CameraPage extends StatefulWidget {
 
 class _CameraPageState extends State<CameraPage> {
   /// タイマー間隔ミリ秒
-  static const _timerDuration = 1000;
-  ///
-  static const fixedPreviewRatio = 4.0 / 3.0;
+  static const _captureTimerDuration = 100;
+  /// カメラプレビューのアスペクト比
+  static const _fixedPreviewRatio = 4.0 / 3.0;
 
-  // 現在のフレーム数
-  //int _currentFrameCount = 0;
   // カメラコントローラ
   late CameraController _cameraController;
   // カメラの初期化判断フラグ
@@ -55,7 +51,7 @@ class _CameraPageState extends State<CameraPage> {
   late final Size previewSize;
 
   // タイマー
-  late Timer _timer;
+  late Timer _captureTimer;
 
   var debugRealtimeLabel = '';
   var debugLabel = '';
@@ -63,29 +59,6 @@ class _CameraPageState extends State<CameraPage> {
   @override
   void initState() {
     super.initState();
-
-    _cameraController = CameraController(
-      // カメラを指定
-      widget.camera,
-      // 解像度を定義
-      ResolutionPreset.high,
-      //マイクへのアクセス禁止
-      enableAudio: false,
-    );
-
-    // コントローラーを初期化
-    _initializeControllerFuture = _cameraController.initialize().then((value) {
-      _cameraController.lockCaptureOrientation(
-        DeviceOrientation.portraitUp,
-      );
-
-      final cameraValue = _cameraController.value;
-      previewSize = cameraValue.previewSize!;
-
-      //検出の開始
-      startDetection();
-      return true;
-    });
   }
 
   @override
@@ -128,13 +101,13 @@ class _CameraPageState extends State<CameraPage> {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         final previewWidth = maxWidth;
-                        final previewHeight = fixedPreviewRatio * maxWidth;
+                        final previewHeight = _fixedPreviewRatio * maxWidth;
                         // カメラプレビューとフレームを重ねて表示
                         return Stack(
                           children: [
                             // カメラプレビューサイズをアスペクト比で固定
                             AspectRatio(
-                              aspectRatio: 1 / fixedPreviewRatio,
+                              aspectRatio: 1 / _fixedPreviewRatio,
                               child: ClipRect(
                                 child: Transform.scale(
                                   scale: _cameraController.value.aspectRatio,
@@ -205,6 +178,36 @@ class _CameraPageState extends State<CameraPage> {
     super.dispose();
   }
 
+  Future<void> initializeCamera() async {
+    final cameras = await availableCameras();
+    final camera = cameras.first;
+
+    _cameraController = CameraController(
+      // カメラを指定
+      camera,
+      // 解像度を定義
+      ResolutionPreset.high,
+      //マイクへのアクセス禁止
+      enableAudio: false,
+    );
+
+    // コントローラーを初期化
+    _initializeControllerFuture = _cameraController.initialize().then((value) {
+      _cameraController.lockCaptureOrientation(
+        DeviceOrientation.portraitUp,
+      );
+
+      final cameraValue = _cameraController.value;
+      previewSize = cameraValue.previewSize!;
+
+      //検出の開始
+      startDetection();
+      return true;
+    });
+  }
+
+  /// ページを再描画
+  ///
   void invalidate() {
     setState(() {
       //
@@ -217,10 +220,10 @@ class _CameraPageState extends State<CameraPage> {
     // カメラのフレーム取得スタート
     _cameraController.startImageStream(getImageByStream);
 
-    // インターバルタイマースタート
-    _timer = Timer.periodic(
+    // タイマースタート
+    _captureTimer = Timer.periodic(
       const Duration(
-        milliseconds: _timerDuration,
+        milliseconds: _captureTimerDuration,
       ),
       // フラグを立ててカメラ画像取得
       (timer) => _takePicture = true,
@@ -230,7 +233,7 @@ class _CameraPageState extends State<CameraPage> {
   /// 検出の停止
   ///
   void stopDetection() {
-    _timer.cancel();
+    _captureTimer.cancel();
   }
 
   Future<void> getImageByStream(CameraImage cameraImage) async {

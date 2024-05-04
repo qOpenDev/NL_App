@@ -7,16 +7,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:camera/camera.dart';
 
 import 'package:noodlelens/main.dart';
+import 'package:noodlelens/learning_model.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    final cameras = await availableCameras();
-    final camera = cameras.first;
+    final model = LearningModel();
     // Build our app and trigger a frame.
-    await tester.pumpWidget(NoodleLens(camera: camera));
+    await tester.pumpWidget(Main(model: model,));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
