@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -120,7 +118,6 @@ class _CameraPageState extends State<CameraPage> {
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          final maxHeight = constraints.maxHeight;
           final maxWidth = constraints.maxWidth;
           return Center(
             child: Column(
@@ -167,12 +164,13 @@ class _CameraPageState extends State<CameraPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      'リアルタイム検出：',
+                      'RealTime :',
                       textAlign: TextAlign.start,
                     ),
                     Text(
                       debugRealtimeLabel,
                       textAlign: TextAlign.end,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -181,12 +179,13 @@ class _CameraPageState extends State<CameraPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      'ユーザ検出：',
+                      'User :',
                       textAlign: TextAlign.start,
                     ),
                     Text(
                       debugLabel,
                       textAlign: TextAlign.end,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 )

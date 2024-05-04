@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
-import 'package:noodlelens/camera_frame.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
@@ -29,21 +28,10 @@ class LearningModel {
   late Interpreter _model;
   // モデルオプション
   late InterpreterOptions _modelOptions;
-  // ラベル(Map)
-  late Map<int, String> _labelMap;
   // ラベル(List)
   late List<String> labelList;
   // インタープリタの初期化フラグ
   static var _isModelInitialized = false;
-
-  // 入力型
-  late TensorType _inputType;
-  // 入力サイズ
-  late List<int> _inputShape;
-  // 出力型
-  late TensorType _outputType;
-  // 出力サイズ
-  late List<int> _outputShape;
 
   Function(String log)? _resultLogCallback;
   /// 推論結果ログを取得するコールバック
@@ -164,10 +152,16 @@ class LearningModel {
   }
 
   Future<List<img.Image>> _CreateImageVariations(img.Image image) async {
+    // インプットサイズにリサイズして正方形にトリミング
     final square = img.copyResizeCropSquare(image, size: _inputImageSize);
-    final rotate1 = img.copyRotate(square, angle: -90);
-    final rotate2 = img.copyRotate(square, angle: 90);
-    final rotate3 = img.copyRotate(square, angle: 180);
+    // サイズに外接する円でトリミング
+    const radius = _inputImageSize ~/ 2;
+    const cx = _inputImageSize ~/ 2;
+    const cy = cx;
+    final circled = img.copyCropCircle(square, radius: radius, centerX: cx, centerY: cy);
+    final rotate1 = img.copyRotate(circled, angle: -90);
+    final rotate2 = img.copyRotate(circled, angle: 90);
+    final rotate3 = img.copyRotate(circled, angle: 180);
     return [rotate1, rotate2, rotate3];
   }
 
@@ -211,11 +205,6 @@ class LearningModel {
     _modelOptions = InterpreterOptions();
     _modelOptions.threads = 1;
     _model = await Interpreter.fromAsset(_modelName, options: _modelOptions);
-
-    _inputShape = _model.getInputTensor(0).shape;
-    _inputType = _model.getInputTensor(0).type;
-    _outputShape = _model.getOutputTensor(0).shape;
-    _outputType = _model.getOutputTensor(0).type;
   }
 
   /// <h1>推論モデルのラベルのロード</h1>
@@ -227,7 +216,6 @@ class LearningModel {
     final label = rawLabel.where((n) => n != '').toList();
     
     labelList = label;
-    _labelMap = label.asMap();
   }
 
   List<List<List<List<num>>>> _convertToTensor(img.Image image) {
@@ -248,10 +236,4 @@ class LearningModel {
     );
     return imageMatrix;
   }
-
-  // Future<img.Image> resizeCropSquare(img.Image image) async {
-  //   final ratateImage = img.copyRotate(image, angle: CameraFrame.deviceRotateDegree);
-  //   final squareImage = img.copyResizeCropSquare(ratateImage, size: _inputImageSize);
-  //   return squareImage;
-  // }
 }
