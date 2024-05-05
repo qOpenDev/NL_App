@@ -8,7 +8,9 @@ import 'dart:io';
 import 'dart:math';
 
 class NoodleLabel {
+  /// データベースインデックス
   final int index;
+  /// 確率
   final double value;
 
   NoodleLabel({required this.index, required this.value});
@@ -20,9 +22,11 @@ class LearningModel {
   static const _labelName = 'assets/tflite/vgg16_9types_labels.txt';
   static const _labelSeparator = ',';
   static const _maxLabelCount = 5;
-  static final Map<int, NoodleLabel> _invalidResult = {1: NoodleLabel(index: -1, value: -1.0)};
+  static final List<NoodleLabel> _invalidResult = [];
   /// 確率を%表示にしたときの小数点以下桁数
-  static final _roundingDecimalPointDigits = 2;
+  static const _roundingDecimalPointDigits = 2;
+  /// 認識可能なラベルの総数
+  static const labelCount = 10;
 
   // 推論モデル
   late Interpreter _model;
@@ -37,6 +41,11 @@ class LearningModel {
   /// 推論結果ログを取得するコールバック
   set resultLogCallback(Function(String log) func) {
     _resultLogCallback = func;
+  }
+  Function(img.Image images)? _inputImageCallback;
+  /// 入力画像を取得するコールバック
+  set inputImageCallback(Function(img.Image images) func) {
+    _inputImageCallback = func;
   }
 
   /// <h1>コンストラクタ</h1>
@@ -59,7 +68,7 @@ class LearningModel {
 
   /// カップ麺の識別
   ///
-  Future<Map<int, NoodleLabel>> fit(img.Image image) async {
+  Future<List<NoodleLabel>> fit(img.Image image) async {
     if(!_isModelInitialized) {
       return _invalidResult;
     }
@@ -94,16 +103,13 @@ class LearningModel {
 
     // デバッグプリント
     _printLabelToDebug(result);
-    // for(var output in outputTensorList) {
-    //   print(output);
-    // }
 
     return result;
   }
 
   /// <h1>推論結果上位のラベルを取得</h1>
   ///
-  Map<int, NoodleLabel> _getSelectedLabels(List<List<double>> outputList) {
+  List<NoodleLabel> _getSelectedLabels(List<List<double>> outputList) {
     final output0 = outputList[0].reduce(max);
     final output1 = outputList[1].reduce(max);
     final output2 = outputList[2].reduce(max);
@@ -126,14 +132,14 @@ class LearningModel {
     }
 
     final valuesList = maxOutput;
-    final Map<int, NoodleLabel> valuesMap = {};
+    final valuesMap = <NoodleLabel>[];
 
     for(var index=0; index < _maxLabelCount; index++) {
       // 最大値とその時のインデックスを取得
       final maxValue = valuesList.reduce(max);
       final maxValueIndex = valuesList.indexOf(maxValue);
       // 最大値を保存
-      valuesMap[index] = NoodleLabel(index: maxValueIndex, value: maxValue);
+      valuesMap.add(NoodleLabel(index: maxValueIndex, value: maxValue));
       // 最大値を元のリストから削除
       valuesList.removeAt(maxValueIndex);
     }
@@ -165,10 +171,10 @@ class LearningModel {
     return [rotate1, rotate2, rotate3];
   }
 
-  void _printLabelToDebug(Map<int, NoodleLabel> result) {
+  void _printLabelToDebug(List<NoodleLabel> result) {
     final top = result[0];
     print("");
-    print(top!.value.toString() + "% : " + labelList[top.index]);
+    print(top.value.toString() + "% : " + labelList[top.index]);
   }
 
   Future<void> _saveImageToDebug(img.Image image) async {

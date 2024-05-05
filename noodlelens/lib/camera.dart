@@ -9,52 +9,49 @@ import 'camera_frame.dart';
 
 class CameraPage extends StatefulWidget {
   late final CameraDescription camera;
-  // 画像を取得したときのコールバック
-  final Function(img.Image) imageCallback;
 
   final _cameraPageState = _CameraPageState();
   /// CameraPageのStateクラスインスタンス
-  get cameraPageState => _cameraPageState;
+  get state => _cameraPageState;
 
-  set debugRealtimeLabel(value) {
-    _cameraPageState.debugRealtimeLabel = value;
-    _cameraPageState.invalidate();
-  }
-
-  set debugLabel(value) {
-    _cameraPageState.debugLabel = value;
-    _cameraPageState.invalidate();
-  }
-
-  CameraPage({
-    Key? key,
-    required this.imageCallback
-  }) : super(key: key);
+  CameraPage({Key? key}) : super(key: key);
 
   @override
   State<CameraPage> createState() => _cameraPageState;
 }
 
 class _CameraPageState extends State<CameraPage> {
-  /// タイマー間隔ミリ秒
+  /// 画像キャプチャタイマー間隔
   static const _captureTimerDuration = 100;
   /// カメラプレビューのアスペクト比
   static const _fixedPreviewRatio = 4.0 / 3.0;
 
-  // カメラコントローラ
+
+  /// 画像を取得したときのコールバック
+  late final Function(img.Image) imageCallback;
+  /// カメラコントローラ
   late CameraController _cameraController;
-  // カメラの初期化判断フラグ
+  /// カメラの初期化判断フラグ
   late Future<bool> _initializeControllerFuture;
-  // trueで画像のフレーム取得
+  /// trueで画像のフレーム取得
   var _takePicture = false;
-  // カメラプレビューサイズ
+  /// カメラプレビューサイズ
   late final Size previewSize;
 
-  // タイマー
-  late Timer _captureTimer;
+  /// 画像キャプチャタイマー
+  late Timer? _captureTimer;
 
-  var debugRealtimeLabel = '';
-  var debugLabel = '';
+  var _debugRealtimeLabel = '';
+  set debugRealtimeLabel(value) {
+    _debugRealtimeLabel = value;
+    invalidate();
+  }
+
+  var _debugLabel = '';
+  set debugLabel(value) {
+    _debugLabel = value;
+    invalidate();
+  }
 
   @override
   void initState() {
@@ -63,116 +60,95 @@ class _CameraPageState extends State<CameraPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('')),
-      drawer: Drawer(
-        child:ListView(
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Settings'),
-            ),
-            ListTile(
-              title: const Text('Item 1'),
-              onTap: () {
-                // Do something
-              },
-            ),
-            ListTile(
-              title: const Text('Item 2'),
-              onTap: () {
-                // Do something
-              },
-            ),
-          ],
-        )
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final maxWidth = constraints.maxWidth;
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                 FutureBuilder<void>(
-                    future: _initializeControllerFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        final previewWidth = maxWidth;
-                        final previewHeight = _fixedPreviewRatio * maxWidth;
-                        // カメラプレビューとフレームを重ねて表示
-                        return Stack(
-                          children: [
-                            // カメラプレビューサイズをアスペクト比で固定
-                            AspectRatio(
-                              aspectRatio: 1 / _fixedPreviewRatio,
-                              child: ClipRect(
-                                child: Transform.scale(
-                                  scale: _cameraController.value.aspectRatio,
-                                  child: Center(
-                                    child: AspectRatio(
-                                      aspectRatio: 1 / _cameraController.value.aspectRatio,
-                                      child: CameraPreview(_cameraController),
-                                    ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxWidth = constraints.maxWidth;
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+               FutureBuilder<void>(
+                  future: _initializeControllerFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      final previewWidth = maxWidth;
+                      final previewHeight = _fixedPreviewRatio * maxWidth;
+
+                      // 検出の開始
+                      if(!_cameraController.value.isStreamingImages) {
+                        resumeDetection();
+                      }
+
+                      // カメラプレビューとフレームを重ねて表示
+                      return Stack(
+                        children: [
+                          // カメラプレビューサイズをアスペクト比で固定
+                          AspectRatio(
+                            aspectRatio: 1 / _fixedPreviewRatio,
+                            child: ClipRect(
+                              child: Transform.scale(
+                                scale: _cameraController.value.aspectRatio,
+                                child: Center(
+                                  child: AspectRatio(
+                                    aspectRatio: 1 / _cameraController.value.aspectRatio,
+                                    child: CameraPreview(_cameraController),
                                   ),
                                 ),
                               ),
                             ),
-                            CustomPaint(
-                              size: Size(previewWidth, previewHeight),
-                              foregroundPainter: CameraViewPainter(),
-                            )
-                          ],
-                        );
-                      }
-                      else {
-                        return const Center(child: CircularProgressIndicator());
-                      }
+                          ),
+                          CustomPaint(
+                            size: Size(previewWidth, previewHeight),
+                            foregroundPainter: CameraViewPainter(),
+                          )
+                        ],
+                      );
                     }
-                ),
-                // デバッグ用リアルタイム認識結果
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'RealTime :',
-                      textAlign: TextAlign.start,
-                    ),
-                    Text(
-                      debugRealtimeLabel,
-                      textAlign: TextAlign.end,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-                // デバッグ用リアルタイム認識結果
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'User :',
-                      textAlign: TextAlign.start,
-                    ),
-                    Text(
-                      debugLabel,
-                      textAlign: TextAlign.end,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                )
-              ],
-            ),
-          );
-        },
-      ),
+                    else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  }
+              ),
+              // デバッグ用リアルタイム認識結果
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'RealTime :',
+                    textAlign: TextAlign.start,
+                  ),
+                  Text(
+                    _debugRealtimeLabel,
+                    textAlign: TextAlign.end,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+              // デバッグ用リアルタイム認識結果
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'User :',
+                    textAlign: TextAlign.start,
+                  ),
+                  Text(
+                    _debugLabel,
+                    textAlign: TextAlign.end,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 
   @override
   void dispose() {
-    stopDetection();
+    suspendDetection();
     // ウィジェットが破棄されたら、コントローラーを破棄
     _cameraController.dispose();
     super.dispose();
@@ -192,18 +168,21 @@ class _CameraPageState extends State<CameraPage> {
     );
 
     // コントローラーを初期化
-    _initializeControllerFuture = _cameraController.initialize().then((value) {
-      _cameraController.lockCaptureOrientation(
-        DeviceOrientation.portraitUp,
-      );
+    _initializeControllerFuture = _initializeCameraController();
+  }
 
-      final cameraValue = _cameraController.value;
-      previewSize = cameraValue.previewSize!;
+  /// カメラコントローラを初期化
+  ///
+  Future<bool> _initializeCameraController() async {
+    await _cameraController.initialize();
+    await _cameraController.lockCaptureOrientation(
+      DeviceOrientation.portraitUp,
+    );
 
-      //検出の開始
-      startDetection();
-      return true;
-    });
+    final cameraValue = _cameraController.value;
+    previewSize = cameraValue.previewSize!;
+
+    return true;
   }
 
   /// ページを再描画
@@ -214,13 +193,11 @@ class _CameraPageState extends State<CameraPage> {
     });
   }
 
-  /// 検出の開始
+  /// 検出の再開
   ///
-  Future<void> startDetection() async {
-    // カメラのフレーム取得スタート
+  Future<void> resumeDetection() async {
     _cameraController.startImageStream(getImageByStream);
-
-    // タイマースタート
+    // タイマー初期化
     _captureTimer = Timer.periodic(
       const Duration(
         milliseconds: _captureTimerDuration,
@@ -232,8 +209,9 @@ class _CameraPageState extends State<CameraPage> {
 
   /// 検出の停止
   ///
-  void stopDetection() {
-    _captureTimer.cancel();
+  void suspendDetection() {
+    _captureTimer?.cancel();
+    _cameraController.stopImageStream();
   }
 
   Future<void> getImageByStream(CameraImage cameraImage) async {
@@ -241,7 +219,7 @@ class _CameraPageState extends State<CameraPage> {
       // CameraImageからImageに変換
       final image = await _convertToImage(cameraImage);
       //コールバック
-      widget.imageCallback(image!);
+      imageCallback(image!);
 
       _takePicture = false;
     }
