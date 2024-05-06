@@ -4,23 +4,21 @@ import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'dart:async';
 
-import 'camera_frame.dart';
 
-
-class CameraPage extends StatefulWidget {
+class Camera extends StatefulWidget {
   late final CameraDescription camera;
 
-  final _cameraPageState = _CameraPageState();
+  final _cameraPageState = CameraState();
   /// CameraPageのStateクラスインスタンス
   get state => _cameraPageState;
 
-  CameraPage({Key? key}) : super(key: key);
+  Camera({Key? key}) : super(key: key);
 
   @override
-  State<CameraPage> createState() => _cameraPageState;
+  State<Camera> createState() => _cameraPageState;
 }
 
-class _CameraPageState extends State<CameraPage> {
+class CameraState extends State<Camera> {
   /// 画像キャプチャタイマー間隔
   static const _captureTimerDuration = 100;
   /// カメラプレビューのアスペクト比
@@ -294,5 +292,23 @@ class _CameraPageState extends State<CameraPage> {
     }
 
     return image;
+  }
+}
+
+class CameraViewPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = (size.width * 0.9) / 2;
+    final paint = Paint()
+      ..color = Colors.blue
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0;
+    canvas.drawCircle(center, radius, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }

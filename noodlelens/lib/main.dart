@@ -28,6 +28,7 @@ Future<void> main() async {
   ]).then((value) => create());
 }
 
+
 class CommonData {
   /// リアルタイム画像取得の最大数
   final maxHistory = 10;
@@ -39,6 +40,7 @@ class CommonData {
   var isCameraActive = false;
 }
 
+
 class Main extends StatelessWidget {
   /// デバッグ用認識タイマー間隔
   static const _debugRecognitionTimerDuration = 500;
@@ -46,7 +48,7 @@ class Main extends StatelessWidget {
   /// 推論モデル
   late final LearningModel _model;
   /// カメラウィジェット
-  late final CameraPage _cameraPage;
+  late final Camera _cameraPage;
 
   /// 直前までの取得画像リスト
   final images = <img.Image>[];
@@ -103,7 +105,7 @@ class Main extends StatelessWidget {
 
   Future<void> initialize() async {
     // カメラ初期化
-    _cameraPage = CameraPage();
+    _cameraPage = Camera();
     await _cameraPage.state.initializeCamera();
     _cameraPage.state.imageCallback = onCaptureImage;
     // 推論インタプリタ初期化
