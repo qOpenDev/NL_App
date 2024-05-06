@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,18 +6,9 @@ import 'package:image/image.dart' as img;
 import 'dart:async';
 
 import 'learning_model.dart';
-
-
-class CommonData {
-  /// リアルタイム画像取得の最大数
-  final maxHistory = 10;
-  /// 認識開始フラグ
-  var startRecognition = false;
-  /// trueでデバッグ用認識
-  var debugRecognition = false;
-  ///
-  var isCameraActive = false;
-}
+import 'image_converter.dart';
+import 'camera_painter.dart';
+import 'menu_drawer.dart';
 
 
 class Camera extends StatefulWidget {
@@ -42,48 +32,66 @@ class CameraState extends State<Camera> {
 
   /// 推論モデル
   late final LearningModel _model;
-  /// カメラウィジェット
-  // late final Camera _cameraPage;
 
   /// 直前までの取得画像リスト
-  final images = <img.Image>[];
-  /// 共通データクラス
-  final common = CommonData();
+  final _imageHistory = <img.Image>[];
 
+  /// 画像キャプチャタイマー
+  Timer? _captureTimer;
   /// デバッグ用認識タイマー
-  late final Timer _debugRecognitionTimer;
+  Timer? _debugRecognitionTimer;
 
-  late final CameraDescription camera;
-
-  /// 画像を取得したときのコールバック
-  //late final Function(img.Image) imageCallback;
   /// カメラコントローラ
   late CameraController _cameraController;
   /// カメラの初期化判断フラグ
   late Future<bool> _initializeControllerFuture;
   /// trueで画像のフレーム取得
   var _takePicture = false;
-  /// カメラプレビューサイズ
-  //late final Size previewSize;
 
-  /// 画像キャプチャタイマー
-  late Timer? _captureTimer;
+  /// リアルタイム画像取得の最大数
+  final _maxImageHistory = 10;
+  /// 認識開始フラグ
+  var _startRecognition = false;
+  /// trueでデバッグ用認識
+  var _debugRecognition = false;
 
   var _debugRealtimeLabel = '';
-  set debugRealtimeLabel(value) {
-    _debugRealtimeLabel = value;
-    invalidate();
-  }
-
   var _debugLabel = '';
-  set debugLabel(value) {
-    _debugLabel = value;
-    invalidate();
+
+
+  Future<void> initialize() async {
+    // カメラ初期化
+    _initializeControllerFuture = _initializeCamera();
+
+    // タイマースタート
+    _startTimer();
+
+    // 認識モデル作成
+    _model = await LearningModel.create();
   }
 
-  @override
-  void initState() {
-    super.initState();
+  Future<bool> _initializeCamera() async {
+    final cameras = await availableCameras();
+    final camera = cameras.first;
+
+    // カメラコントローラ取得
+    _cameraController = CameraController(
+      // カメラを指定
+      camera,
+      // 解像度を定義
+      ResolutionPreset.high,
+      //マイクへのアクセス禁止
+      enableAudio: false,
+    );
+
+    // カメラ初期化
+    await _cameraController.initialize();
+    // カメラ向きを固定
+    await _cameraController.lockCaptureOrientation(
+      DeviceOrientation.portraitUp,
+    );
+
+    return true;
   }
 
   @override
@@ -92,32 +100,11 @@ class CameraState extends State<Camera> {
       appBar: AppBar(
         title: const Text(''),
       ),
-      drawer: Drawer(
-        child:ListView(
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Settings'),
-            ),
-            ListTile(
-              title: const Text('Item 1'),
-              onTap: () {
-                // Do something
-              },
-            ),
-            ListTile(
-              title: const Text('Item 2'),
-              onTap: () {
-                // Do something
-              },
-            ),
-          ],
-        )
+      drawer: const Drawer(
+        child: MenuDrawer(),
       ),
       body: GestureDetector(
-        onTap: () => common.startRecognition = true,
+        onTap: () => _startRecognition = true,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final maxWidth = constraints.maxWidth;
@@ -134,7 +121,7 @@ class CameraState extends State<Camera> {
 
                           // 検出の開始
                           if(!_cameraController.value.isStreamingImages) {
-                            resumeDetection();
+                            _cameraController.startImageStream(_getImageByStream);
                           }
 
                           // カメラプレビューとフレームを重ねて表示
@@ -208,146 +195,86 @@ class CameraState extends State<Camera> {
 
   @override
   void dispose() {
-    suspendDetection();
-    // ウィジェットが破棄されたら、コントローラーを破棄
+    _captureTimer?.cancel();
+    _cameraController.stopImageStream();
     _cameraController.dispose();
+    _stopTimer();
     super.dispose();
   }
 
-  Future<void> initializeCamera() async {
-    final cameras = await availableCameras();
-    final camera = cameras.first;
-
-    _cameraController = CameraController(
-      // カメラを指定
-      camera,
-      // 解像度を定義
-      ResolutionPreset.high,
-      //マイクへのアクセス禁止
-      enableAudio: false,
-    );
-
-    // コントローラーを初期化
-    _initializeControllerFuture = _initializeCameraController();
-  }
-
-  /// カメラコントローラを初期化
+  /// 一定間隔で画像をキャプチャするためのタイマーをスタート
   ///
-  Future<bool> _initializeCameraController() async {
-    await _cameraController.initialize();
-    await _cameraController.lockCaptureOrientation(
-      DeviceOrientation.portraitUp,
-    );
-
-    // final cameraValue = _cameraController.value;
-    // previewSize = cameraValue.previewSize!;
-
-    return true;
-  }
-
-  /// ページを再描画
-  ///
-  void invalidate() {
-    setState(() {
-      //
-    });
-  }
-
-  /// 検出の再開
-  ///
-  Future<void> resumeDetection() async {
-    _cameraController.startImageStream(getImageByStream);
-    // タイマー初期化
-    _captureTimer = Timer.periodic(
+  void _startTimer() {
+    // 画像キャプチャ用タイマー
+    _captureTimer ??= Timer.periodic(
       const Duration(
         milliseconds: _captureTimerDuration,
       ),
       // フラグを立ててカメラ画像取得
       (timer) => _takePicture = true,
     );
-  }
 
-  /// 検出の停止
-  ///
-  void suspendDetection() {
-    _captureTimer?.cancel();
-    _cameraController.stopImageStream();
-  }
-
-  Future<void> getImageByStream(CameraImage cameraImage) async {
-    if(_takePicture) {
-      // CameraImageからImageに変換
-      final image = await _convertToImage(cameraImage);
-      //コールバック
-      onCaptureImage(image!);
-
-      _takePicture = false;
-    }
-  }
-
-  Future<img.Image?> _convertToImage(CameraImage cameraImage) async {
-    img.Image? image;
-    if(cameraImage.format.group == ImageFormatGroup.bgra8888) {
-      image = await _convertBGRA8888toUint8List(cameraImage);
-    }
-    else if(cameraImage.format.group == ImageFormatGroup.yuv420) {
-      image = await _convertYuv420ToUint8List(cameraImage);
-    }
-    else {
-      //
-    }
-
-    return image;
-  }
-
-  Future<void> initialize() async {
-    // カメラ初期化
-    await initializeCamera();
-
-    // imageCallback = onCaptureImage;
-    // 推論インタプリタ初期化
-    _model = await LearningModel.create();
-
-    //デバッグタイマースタート
-    _debugRecognitionTimer = Timer.periodic(
+    // デバッグ認識用タイマー
+    _debugRecognitionTimer ??= Timer.periodic(
       const Duration(
         milliseconds: _debugRecognitionTimerDuration,
       ),
-      (timer) => common.debugRecognition = true,
+      (timer) => _debugRecognition = true,
     );
   }
 
-  Future<void> onCaptureImage(img.Image image) async {
-    //取得画像を保存
-    if(images.length >= common.maxHistory) {
-      images.removeLast();
+  /// タイマーを停止
+  ///
+  void _stopTimer() {
+    _captureTimer?.cancel();
+    _captureTimer = null;
+
+    _debugRecognitionTimer?.cancel();
+    _debugRecognitionTimer = null;
+  }
+
+  Future<void> _getImageByStream(CameraImage cameraImage) async {
+    if(!_takePicture) {
+      // タイマーがフラグを変えたときのみ処理
+      return ;
     }
-    images.insert(0, image);
+
+    // CameraImageからImageに変換
+    final image = await ImageConverter.convertToImage(cameraImage);
+
+    // 古い画像を削除
+    if(_imageHistory.length >= _maxImageHistory) {
+      _imageHistory.removeLast();
+    }
+    //取得画像を保存
+    _imageHistory.insert(0, image!);
 
     // ユーザによる認識の指示
-    if(common.startRecognition) {
+    if(_startRecognition) {
       // 認識
-      final index = await recognition();
-      debugLabel = _model.labelList[index];
-      common.startRecognition = false;
+      final index = await _recognition();
+      setState(() {
+        _debugLabel = _model.labelList[index];
+      });
+      _startRecognition = false;
     }
     // デバッグ用のリアルタイム認識
-    else if(common.debugRecognition) {
+    else if(_debugRecognition) {
       final result = await _model.fit(image);
       final topLabel = result[0];
-      debugRealtimeLabel = '${_model.labelList[topLabel.index]} ${topLabel.value}%';
+      setState(() {
+        _debugRealtimeLabel = '${_model.labelList[topLabel.index]} ${topLabel.value}%';
+      });
 
-      common.debugRecognition = false;
+      _debugRecognition = false;
     }
+
+    _takePicture = false;
   }
 
-  void onTappedCameraPreview() {
-    common.startRecognition = true;
-  }
-
-  Future<int> recognition() async {
+  Future<int> _recognition() async {
     final resultList = <NoodleLabel>[];
-    for(final image in images) {
+    for(final image in _imageHistory) {
       final result = await _model.fit(image);
       resultList.add(result[0]);
     }
@@ -359,79 +286,5 @@ class CameraState extends State<Camera> {
     final maxCount = rank.reduce(max);
     final index = rank.indexOf(maxCount);
     return index;
-  }
-
-  // CameraImageからImageへの変換
-  //
-  Future<img.Image> _convertBGRA8888toUint8List(CameraImage cameraImage) async {
-    final int width = cameraImage.width;
-    final int height = cameraImage.height;
-    final img.Image image = img.Image(width: width, height: height); // 新しいイメージを作成
-
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-        final int pixelOffset = (x + y * width) * 4;
-        final int blue = cameraImage.planes[0].bytes[pixelOffset];
-        final int green = cameraImage.planes[0].bytes[pixelOffset + 1];
-        final int red = cameraImage.planes[0].bytes[pixelOffset + 2];
-        final int alpha = cameraImage.planes[0].bytes[pixelOffset + 3];
-        image.setPixelRgba(x, y, red, green, blue, alpha);
-      }
-    }
-
-    return image;
-  }
-
-  Future<img.Image> _convertYuv420ToUint8List(CameraImage cameraImage) async {
-    final int width = cameraImage.width;
-    final int height = cameraImage.height;
-    final img.Image image = img.Image(width: width, height: height); // 新しいイメージを作成
-
-    // YUVプレーンの取得
-    final Uint8List yPlane = cameraImage.planes[0].bytes;
-    final Uint8List uPlane = cameraImage.planes[1].bytes;
-    final Uint8List vPlane = cameraImage.planes[2].bytes;
-
-    final int uvRowStride = cameraImage.planes[1].bytesPerRow;
-    final int? uvPixelStride = cameraImage.planes[1].bytesPerPixel;
-
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-        final int uvIndex = uvRowStride * (y ~/ 2) + uvPixelStride! * (x ~/ 2);
-        final int index = y * width + x;
-
-        final int yp = yPlane[index];
-        final int up = uPlane[uvIndex];
-        final int vp = vPlane[uvIndex];
-
-        // YUVをRGBに変換
-        final num r = (yp + vp * 1436 / 1024 - 179).clamp(0, 255);
-        final num g = (yp - up * 46549 / 131072 + 44 - vp * 93604 / 131072 + 91).clamp(0, 255);
-        final num b = (yp + up * 1814 / 1024 - 227).clamp(0, 255);
-
-        // RGBAに設定
-        image.setPixelRgb(x, y, r, g, b);
-      }
-    }
-
-    return image;
-  }
-}
-
-class CameraViewPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = (size.width * 0.9) / 2;
-    final paint = Paint()
-      ..color = Colors.blue
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0;
-    canvas.drawCircle(center, radius, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
   }
 }
