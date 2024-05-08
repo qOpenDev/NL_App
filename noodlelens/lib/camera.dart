@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'dart:async';
 
@@ -9,6 +8,7 @@ import 'learning_model.dart';
 import 'image_converter.dart';
 import 'camera_painter.dart';
 import 'menu_drawer.dart';
+import 'async_init.dart';
 
 
 class Camera extends StatefulWidget {
@@ -22,6 +22,15 @@ class Camera extends StatefulWidget {
 
 
 class CameraState extends State<Camera> {
+  CameraState(){
+    _cameraController = AsyncInit.cameraController;
+    _initializeControllerFuture = AsyncInit.initializeControllerFuture;
+    _model = AsyncInit.model;
+
+    // タイマースタート
+    _startTimer();
+  }
+
   /// 画像キャプチャタイマー間隔
   static const _captureTimerDuration = 100;
   /// カメラプレビューのアスペクト比
@@ -58,41 +67,6 @@ class CameraState extends State<Camera> {
   var _debugRealtimeLabel = '';
   var _debugLabel = '';
 
-
-  Future<void> initialize() async {
-    // カメラ初期化
-    _initializeControllerFuture = _initializeCamera();
-
-    // タイマースタート
-    _startTimer();
-
-    // 認識モデル作成
-    _model = await LearningModel.create();
-  }
-
-  Future<bool> _initializeCamera() async {
-    final cameras = await availableCameras();
-    final camera = cameras.first;
-
-    // カメラコントローラ取得
-    _cameraController = CameraController(
-      // カメラを指定
-      camera,
-      // 解像度を定義
-      ResolutionPreset.high,
-      //マイクへのアクセス禁止
-      enableAudio: false,
-    );
-
-    // カメラ初期化
-    await _cameraController.initialize();
-    // カメラ向きを固定
-    await _cameraController.lockCaptureOrientation(
-      DeviceOrientation.portraitUp,
-    );
-
-    return true;
-  }
 
   @override
   Widget build(BuildContext context) {

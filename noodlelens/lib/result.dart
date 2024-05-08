@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:noodlelens/db_manager.dart';
+
+import 'menu_drawer.dart';
+import 'async_init.dart';
 
 
 class Result extends StatelessWidget {
-  const Result({Key? key, required this.title}) : super(key: key);
+  Result({Key? key}) : super(key: key);
 
-  final String title;
+  late final DBManager _db = AsyncInit.db;
+
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(''),
+      ),
+      drawer: const Drawer(
+        child: MenuDrawer(),
+      ),
+      body:const Center(
+        child: Column(
+          children: [
+            Text(
+              '',
+            )
+          ],
+        ),
+      )
+    );
   }
-
 }

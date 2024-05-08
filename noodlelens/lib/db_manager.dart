@@ -36,6 +36,10 @@ class NoodleItem {
 }
 
 class DBManager {
+  /// コンストラクタ
+  ///
+  DBManager._init();
+
   // データベース名
   static const _databaseName = 'appdb.sqlite3';
   // テーブル名
@@ -57,10 +61,6 @@ class DBManager {
   static int _count = -1;
   static const String _imagePath = 'assets/noodle_images/';
 
-  ///
-  /// コンストラクタ
-  ///
-  DBManager._init();
 
   static Future<DBManager> create() async {
     var instance = DBManager._init();
@@ -155,7 +155,7 @@ class DBManager {
   ///
   static Future<void> _getItemCount() async {
     var countQuery = await _database!.rawQuery('SELECT COUNT(*) FROM $_noodleItemTable');
-    _count = countQuery[0] as int;
+    // _count = countQuery[0] as int;
   }
 
   ///
