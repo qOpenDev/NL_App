@@ -176,20 +176,20 @@ class DBManager {
     }
     var item = itemQuery[0];
     var commonId = item[_noodleItemCommonId];
-    var language = lang;
 
     // アイテムの翻訳説明文を検索
     List<Map<String, dynamic>> descriptionQuery = await _database!.query(
       _noodleDescriptionTable,
       where: 'item = ? and language = ?',
-      whereArgs: [commonId, language],
+      whereArgs: [commonId, lang],
     );
     if(descriptionQuery.isEmpty) {
-      throw Exception('指定されたidでの翻訳文が存在しません.');
+      // throw Exception('指定されたidでの翻訳文が存在しません.');
+      return NoodleItem();
     }
     var description = descriptionQuery[0];
 
-    var noodleItem =NoodleItem();
+    var noodleItem = NoodleItem();
     // noodle_item
     noodleItem.commonId = commonId;
     noodleItem.nameJp = item[_noodleItemName];
@@ -198,7 +198,7 @@ class DBManager {
     // noodle_description
     noodleItem.name = description[_noodleDescriptionName];
     // noodleItem.manufactureName = description[_noodleDescriptionManufactureName];
-    noodleItem.language = language;
+    noodleItem.language = lang;
     noodleItem.howToMake = description[_noodleDescriptionRecipe];
     noodleItem.instructions = description[_noodleDescriptionInstructions];
 

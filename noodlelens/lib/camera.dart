@@ -9,6 +9,7 @@ import 'image_converter.dart';
 import 'camera_painter.dart';
 import 'menu_drawer.dart';
 import 'async_init.dart';
+import 'result.dart';
 
 
 class Camera extends StatefulWidget {
@@ -208,39 +209,45 @@ class CameraState extends State<Camera> {
   }
 
   Future<void> _getImageByStream(CameraImage cameraImage) async {
-    if(!_takePicture) {
-      // タイマーがフラグを変えたときのみ処理
-      return ;
-    }
+    // タイマーがフラグを変えたときのみ処理
+    if(_takePicture) {
+      // CameraImageからImageに変換
+      final image = await ImageConverter.convertToImage(cameraImage);
 
-    // CameraImageからImageに変換
-    final image = await ImageConverter.convertToImage(cameraImage);
+      // 古い画像を削除
+      if(_imageHistory.length >= _maxImageHistory) {
+        _imageHistory.removeLast();
+      }
+      //取得画像を保存
+      _imageHistory.insert(0, image!);
 
-    // 古い画像を削除
-    if(_imageHistory.length >= _maxImageHistory) {
-      _imageHistory.removeLast();
+      // デバッグ用のリアルタイム認識
+      if(_debugRecognition) {
+        final result = await _model.fit(image);
+        final topLabel = result[0];
+        setState(() {
+          _debugRealtimeLabel = '${_model.labelList[topLabel.index]} ${topLabel.value}%';
+        });
+        _debugRecognition = false;
+      }
     }
-    //取得画像を保存
-    _imageHistory.insert(0, image!);
 
     // ユーザによる認識の指示
     if(_startRecognition) {
+      _stopTimer();
+      _startRecognition = false;
+      _cameraController.stopImageStream();
+
       // 認識
       final index = await _recognition();
       setState(() {
         _debugLabel = _model.labelList[index];
       });
-      _startRecognition = false;
-    }
-    // デバッグ用のリアルタイム認識
-    else if(_debugRecognition) {
-      final result = await _model.fit(image);
-      final topLabel = result[0];
-      setState(() {
-        _debugRealtimeLabel = '${_model.labelList[topLabel.index]} ${topLabel.value}%';
-      });
 
-      _debugRecognition = false;
+      // ページ遷移
+      pushResultPage(index);
+
+      // _startTimer();
     }
 
     _takePicture = false;
@@ -260,5 +267,16 @@ class CameraState extends State<Camera> {
     final maxCount = rank.reduce(max);
     final index = rank.indexOf(maxCount);
     return index;
+  }
+
+  /// 結果表示のページに遷移
+  ///
+  void pushResultPage(int commonIndex) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context){
+        return Result(commonIndex: commonIndex);
+      }),
+    );
   }
 }

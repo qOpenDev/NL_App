@@ -6,9 +6,10 @@ import 'async_init.dart';
 
 
 class Result extends StatelessWidget {
-  Result({Key? key}) : super(key: key);
+  Result({Key? key, required this.commonIndex}) : super(key: key);
 
   late final DBManager _db = AsyncInit.db;
+  late final int commonIndex;
 
 
   @override
