@@ -15,7 +15,7 @@ void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     final model = LearningModel();
     // Build our app and trigger a frame.
-    await tester.pumpWidget(Main(model: model,));
+    await tester.pumpWidget(Main());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

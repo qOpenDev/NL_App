@@ -257,7 +257,9 @@ class CameraState extends State<Camera> {
       });
 
       // ページ遷移
-      _pushRecognitionResultPage(index).then((result) => _getUsersResult(result));
+      _pushRecognitionResultPage(index).then((result) {
+        _getUsersResult(result);
+      });
     }
   }
 
@@ -332,6 +334,7 @@ class CameraState extends State<Camera> {
         fullscreenDialog: true,
       ),
     );
+
   }
 
   /// 商品解説のページに遷移

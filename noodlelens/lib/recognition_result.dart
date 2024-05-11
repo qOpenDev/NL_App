@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 import 'db_manager.dart';
 import 'menu_drawer.dart';
@@ -12,6 +13,7 @@ class RecognitionResult extends StatelessWidget {
   RecognitionResult({Key? key}) : super(key: key);
 
   static const ok = 1;
+  static const cancel = 2;
   static const otherCandidates = 0;
 
   // データベース
@@ -25,6 +27,10 @@ class RecognitionResult extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
+        leading: IconButton(
+          icon: Platform.isIOS ? const Icon(Icons.arrow_back_ios) : const Icon(Icons.arrow_back),
+          onPressed: () => _close(context, cancel),
+        ),
       ),
       endDrawer: const Drawer(
         child: MenuDrawer(),
@@ -64,18 +70,23 @@ class RecognitionResult extends StatelessWidget {
                       }
                     },
                   ),
-                  ElevatedButton(
-                    onPressed: () => _close(context, ok, noodleItem),
-                    child: const Text(
-                      'Next'
-                    )
-                  ),
-                  ElevatedButton(
-                    onPressed: () => _close(context, otherCandidates),
-                    child: const Text(
-                      'Other candidates'
-                    )
-                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => _close(context, ok, noodleItem),
+                        child: const Text(
+                          'Next'
+                        )
+                      ),
+                      ElevatedButton(
+                        onPressed: () => _close(context, otherCandidates),
+                        child: const Text(
+                          'Other candidates'
+                        )
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
