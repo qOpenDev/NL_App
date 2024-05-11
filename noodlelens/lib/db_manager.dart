@@ -2,38 +2,14 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter/services.dart';
 
+import 'noodle_item.dart';
 
-class NoodleItem {
-  //言語
-  static const EN = 'en';
-  static const ZHS = 'zhs';
-  static const ZHT = 'zht';
-  static const KO = 'ko';
-
-  /// 識別ナンバー
-  int commonId = -1;
-  /// 翻訳言語
-  String language = '';
-  /// 商品名(和)
-  String nameJp = '';
-  /// 商品名
-  String name = '';
-  /// メーカー(和)
-  String manufactureNameJp = '';
-  /// メーカー
-  String manufactureName = '';
-  /// ラベルイメージのパス
-  Image? image;
-  /// 作り方
-  String howToMake = '';
-  /// 商品説明
-  String instructions = '';
-}
 
 class DBManager {
   /// コンストラクタ
@@ -194,7 +170,7 @@ class DBManager {
     noodleItem.commonId = commonId;
     noodleItem.nameJp = item[_noodleItemName];
     noodleItem.manufactureNameJp = item[_noodleItemName];
-    noodleItem.image = _getImage(item[_noodleItemImage]);
+    noodleItem.imagePath = item[_noodleItemImage];
     // noodle_description
     noodleItem.name = description[_noodleDescriptionName];
     // noodleItem.manufactureName = description[_noodleDescriptionManufactureName];
@@ -203,6 +179,10 @@ class DBManager {
     noodleItem.instructions = description[_noodleDescriptionInstructions];
 
     return noodleItem;
+  }
+
+  Future<void> dispose() async {
+    await _database?.close();
   }
 
   Image _getImage(var fileName) {

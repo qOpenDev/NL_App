@@ -1,20 +1,16 @@
 import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as img;
 import 'package:flutter/services.dart';
 import 'package:noodlelens/async_init.dart';
 
 import 'camera.dart';
-import 'learning_model.dart';
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // 非同期で初期化処理
-  await AsyncInit.ialize();
+  await AsyncInit.initialize();
 
   // アプリの向きを固定
   SystemChrome.setPreferredOrientations([

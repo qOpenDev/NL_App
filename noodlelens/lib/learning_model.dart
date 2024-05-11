@@ -242,4 +242,8 @@ class LearningModel {
     );
     return imageMatrix;
   }
+
+  Future<void> dispose() async {
+    _model.close();
+  }
 }

@@ -6,27 +6,29 @@ class MenuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        const DrawerHeader(
-          decoration: BoxDecoration(
-            color: Colors.blue,
+    return Drawer(
+      child: ListView(
+        children: <Widget>[
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Text('Settings'),
           ),
-          child: Text('Settings'),
-        ),
-        ListTile(
-          title: const Text('Item 1'),
-          onTap: () {
-            // Do something
-          },
-        ),
-        ListTile(
-          title: const Text('Item 2'),
-          onTap: () {
-            // Do something
-          },
-        ),
-      ],
+          ListTile(
+            title: const Text('Item 1'),
+            onTap: () {
+              // Do something
+            },
+          ),
+          ListTile(
+            title: const Text('Item 2'),
+            onTap: () {
+              // Do something
+            },
+          ),
+        ],
+      ),
     );
   }
 

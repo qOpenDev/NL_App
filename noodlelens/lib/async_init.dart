@@ -25,7 +25,7 @@ class AsyncInit {
   /// 推論モデル
   static LearningModel get model => _model;
 
-  static Future<bool> ialize() async {
+  static Future<bool> initialize() async {
     // カメラ初期化
     // 後にFutureBuilderにて処理待ちするからここでawaitしない
     _initializeControllerFuture = _initializeCamera();
@@ -61,5 +61,11 @@ class AsyncInit {
     );
 
     return true;
+  }
+  
+  static Future<void> dispose() async {
+    await _db.dispose();
+    await _cameraController.dispose();
+    await _model.dispose();
   }
 }

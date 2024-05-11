@@ -1,15 +1,18 @@
+import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:camera/camera.dart';
-import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
+import 'package:noodlelens/description.dart';
+import 'package:noodlelens/noodle_item.dart';
 import 'dart:async';
 
+import 'config.dart';
 import 'learning_model.dart';
 import 'image_converter.dart';
 import 'camera_painter.dart';
 import 'menu_drawer.dart';
 import 'async_init.dart';
-import 'result.dart';
+import 'recognition_result.dart';
 
 
 class Camera extends StatefulWidget {
@@ -27,9 +30,6 @@ class CameraState extends State<Camera> {
     _cameraController = AsyncInit.cameraController;
     _initializeControllerFuture = AsyncInit.initializeControllerFuture;
     _model = AsyncInit.model;
-
-    // タイマースタート
-    _startTimer();
   }
 
   /// 画像キャプチャタイマー間隔
@@ -65,17 +65,27 @@ class CameraState extends State<Camera> {
   /// trueでデバッグ用認識
   var _debugRecognition = false;
 
+  /// Widgetのビルドを停止
+  var _avoidWidgetBuild = false;
+
   var _debugRealtimeLabel = '';
   var _debugLabel = '';
 
 
   @override
   Widget build(BuildContext context) {
+    if(_avoidWidgetBuild) {
+      return Container();
+    }
+
+    // タイマースタート
+    _startTimer();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
       ),
-      drawer: const Drawer(
+      endDrawer: const Drawer(
         child: MenuDrawer(),
       ),
       body: GestureDetector(
@@ -234,9 +244,11 @@ class CameraState extends State<Camera> {
 
     // ユーザによる認識の指示
     if(_startRecognition) {
-      _stopTimer();
+      // _avoidWidgetBuild = true;
       _startRecognition = false;
-      _cameraController.stopImageStream();
+      _takePicture = false;
+      _stopTimer();
+      // _cameraController.stopImageStream();
 
       // 認識
       final index = await _recognition();
@@ -245,12 +257,49 @@ class CameraState extends State<Camera> {
       });
 
       // ページ遷移
-      pushResultPage(index);
-
-      // _startTimer();
+      _pushRecognitionResultPage(index).then((result) => _getUsersResult(result));
     }
+  }
 
-    _takePicture = false;
+  /// カメラのフレーム取得を開始
+  ///
+  bool _startImageStream() {
+    if(!_cameraController.value.isStreamingImages) {
+      _cameraController.startImageStream(_getImageByStream);
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  /// カメラのフレームの取得を停止
+  ///
+  bool stopImageStream() {
+    if(_cameraController.value.isStreamingImages) {
+      _cameraController.stopImageStream();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  /// 認識結果の表示ページからのユーザの戻り値を処理
+  ///
+  Future<void> _getUsersResult(Map<String, dynamic> result) async {
+    int state = result['state'];
+    NoodleItem? item = result['item'];
+    switch(state) {
+      case RecognitionResult.ok:
+        await _pushDescriptionPage(item!);
+        // カメラを再開
+        _avoidWidgetBuild = false;
+        _startImageStream();
+        break;
+      case RecognitionResult.otherCandidates:
+        break;
+    }
   }
 
   Future<int> _recognition() async {
@@ -269,14 +318,32 @@ class CameraState extends State<Camera> {
     return index;
   }
 
-  /// 結果表示のページに遷移
+  /// 認識結果表示のページに遷移
   ///
-  void pushResultPage(int commonIndex) {
-    Navigator.push(
+  Future<Map<String, dynamic>> _pushRecognitionResultPage(int commonIndex) async {
+    Config.commonIndex = commonIndex;
+
+    return await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context){
-        return Result(commonIndex: commonIndex);
-      }),
+      MaterialPageRoute(
+        builder: (context){
+          return RecognitionResult();
+        },
+        fullscreenDialog: true,
+      ),
+    );
+  }
+
+  /// 商品解説のページに遷移
+  ///
+  Future<void> _pushDescriptionPage(NoodleItem item) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context){
+          return Description(noodleItem: item,);
+        },
+      ),
     );
   }
 }
