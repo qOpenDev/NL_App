@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'db_manager.dart';
 import 'menu_drawer.dart';
-import 'async_init.dart';
 import 'noodle_item.dart';
-import 'config.dart';
 
 
-class Description extends StatelessWidget {
-  const Description({Key? key, required this.noodleItem}) : super(key: key);
+class DescriptionViewer extends StatelessWidget {
+  const DescriptionViewer({Key? key, required this.noodleItem}) : super(key: key);
 
   final NoodleItem noodleItem;
 

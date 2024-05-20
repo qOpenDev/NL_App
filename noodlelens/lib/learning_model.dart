@@ -1,28 +1,36 @@
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:tflite_flutter/tflite_flutter.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:intl/intl.dart';
 
-import 'dart:io';
 import 'dart:math';
 
-class NoodleLabel {
+import 'debug_screen.dart';
+
+
+class RecognitionResult {
   /// データベースインデックス
   final int index;
   /// 確率
   final double value;
 
-  NoodleLabel({required this.index, required this.value});
+  RecognitionResult({required this.index, required this.value});
 }
 
+
 class LearningModel {
+  /// <h1>コンストラクタ</h1>
+  ///
+  /// <p>
+  /// インスタンスの作成はcreate()から行うこと。
+  /// </p>
+  LearningModel();
+
   static const _inputImageSize = 64;
   static const _modelName = 'assets/tflite/vgg16_9types.tflite';
   static const _labelName = 'assets/tflite/vgg16_9types_labels.txt';
   static const _labelSeparator = ',';
   static const _maxLabelCount = 5;
-  static final List<NoodleLabel> _invalidResult = [];
+  static final List<RecognitionResult> _invalidResult = [];
   /// 確率を%表示にしたときの小数点以下桁数
   static const _roundingDecimalPointDigits = 2;
   /// 認識可能なラベルの総数
@@ -37,24 +45,7 @@ class LearningModel {
   // インタープリタの初期化フラグ
   static var _isModelInitialized = false;
 
-  Function(String log)? _resultLogCallback;
-  /// 推論結果ログを取得するコールバック
-  set resultLogCallback(Function(String log) func) {
-    _resultLogCallback = func;
-  }
-  Function(img.Image images)? _inputImageCallback;
-  /// 入力画像を取得するコールバック
-  set inputImageCallback(Function(img.Image images) func) {
-    _inputImageCallback = func;
-  }
 
-  /// <h1>コンストラクタ</h1>
-  ///
-  /// <p>
-  /// インスタンスの作成はcreate()から行うこと。
-  /// </p>
-  LearningModel() {
-  }
 
   /// <h1>インスタンス生成</h1>
   static Future<LearningModel> create() async {
@@ -68,22 +59,20 @@ class LearningModel {
 
   /// カップ麺の識別
   ///
-  Future<List<NoodleLabel>> fit(img.Image image) async {
+  Future<List<RecognitionResult>> fit(img.Image image) async {
     if(!_isModelInitialized) {
       return _invalidResult;
     }
 
     var result = _invalidResult;
     final inputImages = await _CreateImageVariations(image);
+
     List<List<double>> outputTensorList = List.filled(inputImages.length, List<double>.filled(labelList.length, 0.0));
     try {
       var index = 0;
       for (var image in inputImages) {
         final inputTensor = _convertToTensor(image);
         final outputTensor = [List<double>.filled(labelList.length, 0.0)];
-
-        // デバッグ
-        //_saveImageToDebug(image);
 
         // インタプリタの実行
         await _run(inputTensor, outputTensor);
@@ -103,13 +92,16 @@ class LearningModel {
 
     // デバッグプリント
     _printLabelToDebug(result);
+    // デバッグスクリーン用
+    DebugScreen.imageList?.add(inputImages);
+    DebugScreen.resultList?.add(result[0]);
 
     return result;
   }
 
   /// <h1>推論結果上位のラベルを取得</h1>
   ///
-  List<NoodleLabel> _getSelectedLabels(List<List<double>> outputList) {
+  List<RecognitionResult> _getSelectedLabels(List<List<double>> outputList) {
     final output0 = outputList[0].reduce(max);
     final output1 = outputList[1].reduce(max);
     final output2 = outputList[2].reduce(max);
@@ -132,14 +124,14 @@ class LearningModel {
     }
 
     final valuesList = maxOutput;
-    final valuesMap = <NoodleLabel>[];
+    final valuesMap = <RecognitionResult>[];
 
     for(var index=0; index < _maxLabelCount; index++) {
       // 最大値とその時のインデックスを取得
       final maxValue = valuesList.reduce(max);
       final maxValueIndex = valuesList.indexOf(maxValue);
       // 最大値を保存
-      valuesMap.add(NoodleLabel(index: maxValueIndex, value: maxValue));
+      valuesMap.add(RecognitionResult(index: maxValueIndex, value: maxValue));
       // 最大値を元のリストから削除
       valuesList.removeAt(maxValueIndex);
     }
@@ -168,36 +160,36 @@ class LearningModel {
     final rotate1 = img.copyRotate(circled, angle: -90);
     final rotate2 = img.copyRotate(circled, angle: 90);
     final rotate3 = img.copyRotate(circled, angle: 180);
-    return [rotate1, rotate2, rotate3];
+    return [rotate1, circled, rotate2, rotate3];
   }
 
-  void _printLabelToDebug(List<NoodleLabel> result) {
+  void _printLabelToDebug(List<RecognitionResult> result) {
     final top = result[0];
     print("");
     print(top.value.toString() + "% : " + labelList[top.index]);
   }
 
-  Future<void> _saveImageToDebug(img.Image image) async {
-    try {
-      String? path;
-      if(Platform.isIOS) {
-        path = await getApplicationDocumentsDirectory().toString();
-      }
-      else if(Platform.isAndroid) {
-        path = '/data/data/com.qopendev.noodlelens/app_flutter';
-      }
-      final dateTime = DateTime.now();
-      final fileName = DateFormat('yyyyMMddhhmmss${dateTime.millisecond}').format(dateTime) + '.png';
-      final imagePath = '$path/$fileName';
-      final imageFile = File(imagePath);
-      final pngByte = img.encodePng(image);
-      await imageFile.writeAsBytes(pngByte);
-    }
-    catch(ex) {
-      print('');
-      print('画像のデバッグ保存に失敗.-------------------------------------------');
-    }
-  }
+  // Future<void> _saveImageToDebug(img.Image image) async {
+  //   try {
+  //     String? path;
+  //     if(Platform.isIOS) {
+  //       path = await getApplicationDocumentsDirectory().toString();
+  //     }
+  //     else if(Platform.isAndroid) {
+  //       path = '/data/data/com.qopendev.noodlelens/app_flutter';
+  //     }
+  //     final dateTime = DateTime.now();
+  //     final fileName = DateFormat('yyyyMMddhhmmss${dateTime.millisecond}').format(dateTime) + '.png';
+  //     final imagePath = '$path/$fileName';
+  //     final imageFile = File(imagePath);
+  //     final pngByte = img.encodePng(image);
+  //     await imageFile.writeAsBytes(pngByte);
+  //   }
+  //   catch(ex) {
+  //     print('');
+  //     print('画像のデバッグ保存に失敗.-------------------------------------------');
+  //   }
+  // }
 
   /// 非同期でインタープリタの実行
   /// 

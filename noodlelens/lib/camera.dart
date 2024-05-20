@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as img;
-import 'package:noodlelens/description.dart';
+import 'package:noodlelens/description_viewer.dart';
 import 'package:noodlelens/noodle_item.dart';
 import 'dart:async';
 
-import 'config.dart';
+import 'user_config.dart';
 import 'learning_model.dart';
 import 'image_converter.dart';
 import 'camera_painter.dart';
 import 'menu_drawer.dart';
 import 'async_init.dart';
-import 'recognition_result.dart';
+import 'result_viewer.dart';
 
 
 class Camera extends StatefulWidget {
@@ -45,6 +45,8 @@ class CameraState extends State<Camera> {
 
   /// 直前までの取得画像リスト
   final _imageHistory = <img.Image>[];
+  /// _imageHistoryの認識結果
+  // final _resultList = <RecognitionResult>[];
 
   /// 画像キャプチャタイマー
   Timer? _captureTimer;
@@ -221,6 +223,7 @@ class CameraState extends State<Camera> {
   Future<void> _getImageByStream(CameraImage cameraImage) async {
     // タイマーがフラグを変えたときのみ処理
     if(_takePicture) {
+      _takePicture = false;
       // CameraImageからImageに変換
       final image = await ImageConverter.convertToImage(cameraImage);
 
@@ -244,11 +247,9 @@ class CameraState extends State<Camera> {
 
     // ユーザによる認識の指示
     if(_startRecognition) {
-      // _avoidWidgetBuild = true;
       _startRecognition = false;
       _takePicture = false;
       _stopTimer();
-      // _cameraController.stopImageStream();
 
       // 認識
       final index = await _recognition();
@@ -293,19 +294,19 @@ class CameraState extends State<Camera> {
     int state = result['state'];
     NoodleItem? item = result['item'];
     switch(state) {
-      case RecognitionResult.ok:
+      case ResultViewer.ok:
         await _pushDescriptionPage(item!);
         // カメラを再開
         _avoidWidgetBuild = false;
         _startImageStream();
         break;
-      case RecognitionResult.otherCandidates:
+      case ResultViewer.otherCandidates:
         break;
     }
   }
 
   Future<int> _recognition() async {
-    final resultList = <NoodleLabel>[];
+    var resultList = [];
     for(final image in _imageHistory) {
       final result = await _model.fit(image);
       resultList.add(result[0]);
@@ -323,13 +324,13 @@ class CameraState extends State<Camera> {
   /// 認識結果表示のページに遷移
   ///
   Future<Map<String, dynamic>> _pushRecognitionResultPage(int commonIndex) async {
-    Config.commonIndex = commonIndex;
+    UserConfig.commonIndex = commonIndex;
 
     return await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context){
-          return RecognitionResult();
+          return ResultViewer();
         },
         fullscreenDialog: true,
       ),
@@ -344,7 +345,7 @@ class CameraState extends State<Camera> {
       context,
       MaterialPageRoute(
         builder: (context){
-          return Description(noodleItem: item,);
+          return DescriptionViewer(noodleItem: item,);
         },
       ),
     );

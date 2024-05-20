@@ -5,12 +5,13 @@ import 'db_manager.dart';
 import 'menu_drawer.dart';
 import 'async_init.dart';
 import 'noodle_item.dart';
-import 'config.dart';
-import 'description.dart';
+import 'user_config.dart';
 
 
-class RecognitionResult extends StatelessWidget {
-  RecognitionResult({Key? key}) : super(key: key);
+/// 最も確率の高い認識結果を表示するページクラス
+///
+class ResultViewer extends StatelessWidget {
+  ResultViewer({Key? key}) : super(key: key);
 
   static const ok = 1;
   static const cancel = 2;
@@ -97,7 +98,7 @@ class RecognitionResult extends StatelessWidget {
   }
 
   Future<NoodleItem> _getNoodleItem() async {
-    var item = await _db.getNoodleItem(Config.commonIndex, Config.language);
+    var item = await _db.getNoodleItem(UserConfig.commonIndex, UserConfig.language);
     return item;
   }
 

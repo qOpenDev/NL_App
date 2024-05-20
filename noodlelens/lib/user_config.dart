@@ -1,6 +1,5 @@
-import 'noodle_item.dart';
 
-class Config {
+class UserConfig {
   /// 英語
   static const EN = 'en';
   /// 簡体字中国語

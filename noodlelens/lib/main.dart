@@ -17,15 +17,13 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]).then((value) async {
-    runApp(Main());
+    runApp(const Main());
   });
 }
 
 
 class Main extends StatelessWidget {
-  Main({Key? key}):super(key: key);
-
-  final Camera camera = Camera();
+  const Main({Key? key}):super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +32,7 @@ class Main extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: camera,
+      home: Camera(),
     );
   }
 }

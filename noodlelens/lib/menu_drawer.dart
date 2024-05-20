@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'debug_screen.dart';
 
 
 class MenuDrawer extends StatelessWidget {
@@ -9,27 +12,31 @@ class MenuDrawer extends StatelessWidget {
     return Drawer(
       child: ListView(
         children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: Text('Settings'),
-          ),
           ListTile(
-            title: const Text('Item 1'),
+            title: const Text('Language'),
             onTap: () {
               // Do something
             },
           ),
           ListTile(
-            title: const Text('Item 2'),
-            onTap: () {
-              // Do something
-            },
-          ),
+            title: const Text('DebugScreen'),
+            onTap: () => _pushDebugScreen(context),
+          )
         ],
       ),
     );
   }
 
+  /// デバッグスクリーンに移動
+  ///
+  Future<void> _pushDebugScreen(BuildContext context) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context){
+          return DebugScreen();
+        },
+      ),
+    );
+  }
 }
